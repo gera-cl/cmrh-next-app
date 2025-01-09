@@ -3,17 +3,16 @@
 import type { ThemeProviderProps } from "next-themes";
 
 import * as React from "react";
+import { ThemeProvider as NextThemesProvider } from "next-themes";
 import { NextUIProvider } from "@nextui-org/system";
 import { useRouter } from "next/navigation";
-import { ThemeProvider as NextThemesProvider } from "next-themes";
-
-import { SessionProvider } from "next-auth/react"
+import { SessionProvider } from "next-auth/react";
 import { Session } from "next-auth";
 
 export interface ProvidersProps {
   children: React.ReactNode;
   themeProps?: ThemeProviderProps;
-  session: Session
+  session: Session;
 }
 
 declare module "@react-types/shared" {
