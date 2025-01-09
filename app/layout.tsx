@@ -2,13 +2,13 @@ import "@/styles/globals.css";
 import { Metadata, Viewport } from "next";
 import { Link } from "@nextui-org/link";
 import clsx from "clsx";
+import { Session } from "next-auth";
 
 import { Providers } from "./providers";
 
 import { siteConfig } from "@/config/site";
 import { fontSans } from "@/config/fonts";
 import { Navbar } from "@/components/navbar";
-import { Session } from "next-auth";
 
 export const metadata: Metadata = {
   title: {
@@ -30,10 +30,10 @@ export const viewport: Viewport = {
 
 export default function RootLayout({
   children,
-  session
+  session,
 }: {
   children: React.ReactNode;
-  session: Session
+  session: Session;
 }) {
   return (
     <html suppressHydrationWarning lang="en">
@@ -44,7 +44,10 @@ export default function RootLayout({
           fontSans.variable,
         )}
       >
-        <Providers themeProps={{ attribute: "class", defaultTheme: "dark" }} session={session}>
+        <Providers
+          session={session}
+          themeProps={{ attribute: "class", defaultTheme: "dark" }}
+        >
           <div className="relative flex flex-col h-screen">
             <Navbar />
             <main className="container mx-auto max-w-7xl pt-16 px-6 flex-grow">
