@@ -6,12 +6,15 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint . --ext .ts,.tsx -c .eslintrc.json --fix"
+    "lint": "eslint . --ext .ts,.tsx -c .eslintrc.json --fix",
+    "drizzle-kit:generate": "drizzle-kit generate"
   },
   "dependencies": {
     "@neondatabase/serverless": "^0.10.4",
     "@nextui-org/button": "2.2.8",
     "@nextui-org/code": "2.2.5",
+    "@nextui-org/divider": "^2.2.5",
+    "@nextui-org/form": "^2.1.8",
     "@nextui-org/input": "2.4.7",
     "@nextui-org/kbd": "2.2.5",
     "@nextui-org/link": "2.2.6",
