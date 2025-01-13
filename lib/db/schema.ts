@@ -13,9 +13,11 @@ export const credentialsTable = pgTable('credentials_table', {
   username: text('username').notNull(),
   alternative_username: text('alternative_username'),
   password: text('password').notNull(),
+  password_iv: text('password_iv').notNull(),
+  password_authTag: text('password_authTag').notNull(),
   note: text('note'),
-  iv: text('iv').notNull(),
-  authTag: text('authTag').notNull(),
+  note_iv: text('note_iv'),
+  note_authTag: text('note_authTag'),
   userId: integer('user_id')
     .notNull()
     .references(() => usersTable.id, { onDelete: 'cascade' }),
