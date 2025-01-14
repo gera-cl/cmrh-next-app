@@ -3,12 +3,16 @@ import NextAuth from "next-auth";
 declare module "next-auth" {
   interface Session {
     user: {
-      id: string | undefined;
-      providerAccountId: string | undefined;
-    };
+      name: string
+      email: string
+      image: string
+      providerAccountId: string | undefined
+      id: string | undefined
+    }
+    expires: string
   }
 
-  interface Account {}
+  interface Account { }
 }
 
 declare module "next-auth/jwt" {
