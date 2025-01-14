@@ -1,15 +1,14 @@
-import NextAuth from "next-auth"
+import NextAuth from "next-auth";
 
 declare module "next-auth" {
   interface Session {
     user: {
       id: string | undefined;
       providerAccountId: string | undefined;
-    }
+    };
   }
 
-  interface Account {
-  }
+  interface Account {}
 }
 
 declare module "next-auth/jwt" {
