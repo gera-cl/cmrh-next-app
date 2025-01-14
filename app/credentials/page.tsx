@@ -1,9 +1,9 @@
-"use client"
+"use client";
 
 import React from "react";
 import { Button } from "@nextui-org/button";
 import { Form } from "@nextui-org/form";
-import { Input, Textarea} from "@nextui-org/input";
+import { Input, Textarea } from "@nextui-org/input";
 import { Divider } from "@nextui-org/divider";
 
 export default function NewCredentialForm() {
@@ -12,17 +12,17 @@ export default function NewCredentialForm() {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     let data = Object.fromEntries(new FormData(e.currentTarget));
-    
+
     await fetch("/api/credentials", {
       method: "POST",
       body: JSON.stringify(data),
       headers: {
         "Content-Type": "application/json",
       },
-    })
+    });
 
     setAction(`submit ${JSON.stringify(data)}`);
-  }
+  };
 
   return (
     <Form
@@ -31,7 +31,6 @@ export default function NewCredentialForm() {
       onReset={() => setAction("reset")}
       onSubmit={handleSubmit}
     >
-
       <Input
         isRequired
         errorMessage="Please enter a valid url"
@@ -83,12 +82,12 @@ export default function NewCredentialForm() {
         type="text"
       />
 
-      <Textarea 
+      <Textarea
         className="max-w-xs"
-        label="Note" 
-        labelPlacement="outside" 
+        label="Note"
+        labelPlacement="outside"
         name="note"
-        placeholder="Enter a note" 
+        placeholder="Enter a note"
       />
 
       <div className="flex gap-2">
@@ -107,4 +106,3 @@ export default function NewCredentialForm() {
     </Form>
   );
 }
-
