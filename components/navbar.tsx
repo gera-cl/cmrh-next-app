@@ -173,6 +173,7 @@ export const Navbar = () => {
         as="div"
         justify="end"
       >
+        <ThemeSwitch />
         {userMenu(session, status)}
       </NavbarContent>
 
