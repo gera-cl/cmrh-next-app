@@ -1,10 +1,10 @@
 "use client";
 
 import React from "react";
-import { Button } from "@nextui-org/button";
-import { Form } from "@nextui-org/form";
-import { Input, Textarea } from "@nextui-org/input";
-import { Divider } from "@nextui-org/divider";
+import { Button } from "@heroui/button";
+import { Form } from "@heroui/form";
+import { Input, Textarea } from "@heroui/input";
+import { Divider } from "@heroui/divider";
 
 export default function NewCredentialPage() {
   const [action, setAction] = React.useState<null | string>(null);

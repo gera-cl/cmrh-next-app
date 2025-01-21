@@ -1,5 +1,5 @@
 import { Tooltip } from "@heroui/tooltip";
-import { Button } from "@nextui-org/button"
+import { Button } from "@heroui/button"
 import { FC, ComponentProps, useState } from "react"
 import CopyToClipboard from "react-copy-to-clipboard"
 import { IoCheckmarkDoneSharp } from "react-icons/io5";

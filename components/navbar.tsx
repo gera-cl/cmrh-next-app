@@ -9,15 +9,15 @@ import {
   NavbarBrand,
   NavbarItem,
   NavbarMenuItem,
-} from "@nextui-org/navbar";
-import { Button } from "@nextui-org/button";
-import { Kbd } from "@nextui-org/kbd";
-import { Link } from "@nextui-org/link";
-import { Input } from "@nextui-org/input";
-import { link as linkStyles } from "@nextui-org/theme";
+} from "@heroui/navbar";
+import { Button } from "@heroui/button";
+import { Kbd } from "@heroui/kbd";
+import { Link } from "@heroui/link";
+import { Input } from "@heroui/input";
+import { link as linkStyles } from "@heroui/theme";
 import NextLink from "next/link";
-import { Dropdown, DropdownItem, DropdownMenu, DropdownSection, DropdownTrigger } from "@nextui-org/dropdown";
-import { Avatar } from "@nextui-org/avatar";
+import { Dropdown, DropdownItem, DropdownMenu, DropdownSection, DropdownTrigger } from "@heroui/dropdown";
+import { Avatar } from "@heroui/avatar";
 import clsx from "clsx";
 
 import { siteConfig } from "@/config/site";
@@ -33,7 +33,7 @@ import {
 import { PiPlusCircleDuotone } from "react-icons/pi";
 
 import { Session } from "next-auth";
-import { User } from "@nextui-org/user";
+import { User } from "@heroui/user";
 
 const userMenu = (session: Session | null, status: "authenticated" | "loading" | "unauthenticated") => (
   <Dropdown placement="bottom-end">
