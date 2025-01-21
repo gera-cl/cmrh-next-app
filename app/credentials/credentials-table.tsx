@@ -1,18 +1,18 @@
 "use client"
 
-import { Button, ButtonGroup } from "@nextui-org/button";
-import { ChipProps, Chip } from "@nextui-org/chip";
-import { Dropdown, DropdownTrigger, DropdownMenu, DropdownItem } from "@nextui-org/dropdown";
-import { Pagination } from "@nextui-org/pagination";
-import { Table, TableHeader, TableColumn, TableBody, TableRow, TableCell, Selection } from "@nextui-org/table";
+import { Button, ButtonGroup } from "@heroui/button";
+import { ChipProps, Chip } from "@heroui/chip";
+import { Dropdown, DropdownTrigger, DropdownMenu, DropdownItem } from "@heroui/dropdown";
+import { Pagination } from "@heroui/pagination";
+import { Table, TableHeader, TableColumn, TableBody, TableRow, TableCell, Selection } from "@heroui/table";
 import { SortDescriptor } from "@react-types/shared";
-import { User } from "@nextui-org/user";
-import { Input } from "@nextui-org/input";
+import { User } from "@heroui/user";
+import { Input } from "@heroui/input";
 import React, { SVGProps } from "react";
 import { CredentialDto } from "@/lib/services/credentials.service";
 import { TbBrowserShare, TbKey, TbUsers, TbSearch, TbPlus, TbChevronDown } from "react-icons/tb";
 import { Tooltip } from "@heroui/tooltip";
-import { Link } from "@nextui-org/link";
+import { Link } from "@heroui/link";
 import { CopyButton } from "@/components/copy-button";
 import { siteConfig } from "@/config/site";
 
