@@ -1,11 +1,7 @@
 import { NextRequest } from "next/server";
 
 import { getSession } from "@/lib/auth";
-import {
-  createCredential,
-  getCredentialsByUserId,
-} from "@/lib/db/queries/credentials.queries";
-import { encrypt, decrypt } from "@/lib/util/cipher.util";
+import { createCredential, getCredentialsByUserId } from "@/lib/services/credentials.service";
 
 const secret = process.env.CMRH_ENCRYPTION_SECRET;
 
@@ -30,29 +26,11 @@ export async function POST(request: NextRequest) {
       : null;
   payload.note = payload.note.trim().length > 0 ? payload.note : null;
 
-  // Encrypt password
-  const password_encryptedData = await encrypt(payload.password, secret);
-
-  payload.password = password_encryptedData.encryptedText;
-  payload.password_iv = password_encryptedData.iv;
-  payload.password_authTag = password_encryptedData.authTag;
-
-  // Encrypt note, if it exists
-  if (payload.note && payload.note.trim().length > 0) {
-    const note_encryptedData = await encrypt(payload.note, secret);
-
-    payload.note = note_encryptedData.encryptedText;
-    payload.note_iv = note_encryptedData.iv;
-    payload.note_authTag = note_encryptedData.authTag;
-  }
-
-  try {
-    const result = await createCredential(payload);
-
-    return Response.json({ id: result[0].id });
-  } catch (error) {
-    console.error(error);
-
+  // call service
+  const createdCredential = await createCredential(payload, secret);
+  if(createdCredential) {
+    return Response.json(createdCredential);
+  } else {
     return Response.json(
       { error: "Failed to create credential" },
       { status: 500 },
@@ -71,38 +49,6 @@ export async function GET() {
       { status: 500 },
     );
 
-  let credentials = await getCredentialsByUserId(parseInt(session.user.id));
-
-  credentials = await Promise.all(
-    credentials.map((credential) =>
-      Promise.all([
-        decrypt(secret, {
-          encryptedText: credential.password,
-          iv: credential.password_iv,
-          authTag: credential.password_authTag,
-        }),
-        credential.note && credential.note_iv && credential.note_authTag
-          ? decrypt(secret, {
-              encryptedText: credential.note,
-              iv: credential.note_iv,
-              authTag: credential.note_authTag,
-            })
-          : null,
-      ]).then(([password, note]) => ({
-        ...credential,
-        password,
-        note,
-      })),
-    ),
-  );
-
-  const credentials_dto = credentials.map((credential) => ({
-    ...credential,
-    password_iv: undefined,
-    password_authTag: undefined,
-    note_iv: undefined,
-    note_authTag: undefined,
-  }));
-
-  return Response.json(credentials_dto);
+  let credentials = await getCredentialsByUserId(session.user.id, secret);
+  return Response.json(credentials);
 }

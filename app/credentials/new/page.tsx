@@ -26,7 +26,7 @@ export default function NewCredentialPage() {
 
   return (
     <Form
-      className="w-full max-w-xs flex flex-col gap-4"
+      className="w-full max-w-md flex flex-col gap-4 px-4"
       validationBehavior="native"
       onReset={() => setAction("reset")}
       onSubmit={handleSubmit}
@@ -84,7 +84,6 @@ export default function NewCredentialPage() {
       />
 
       <Textarea
-        className="max-w-xs"
         label="Note"
         labelPlacement="outside"
         name="note"
