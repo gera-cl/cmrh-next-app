@@ -14,7 +14,7 @@ export default async function CredentialsPage() {
       { error: "Missing encryption secret" },
       { status: 500 },
     );
-  const data = await getCredentialsByUserId(session.user.id, secret);
+  const data = await (getCredentialsByUserId(session.user.id, secret))();
 
   return (
     <div>

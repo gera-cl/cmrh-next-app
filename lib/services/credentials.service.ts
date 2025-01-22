@@ -1,7 +1,8 @@
 import * as credentialsQueries from "@/lib/db/queries/credentials.queries";
 import { encrypt, decrypt } from "../util/cipher.util";
+import { revalidateTag, unstable_cache } from 'next/cache'
 
-export async function getCredentialsByUserId(userId: string, cipherSecret: string): Promise<CredentialDto[]> {
+async function internal_getCredentialsByUserId(userId: string, cipherSecret: string): Promise<CredentialDto[]> {
   let credentials = await credentialsQueries.getCredentialsByUserId(parseInt(userId));
 
   credentials = await Promise.all(
@@ -38,6 +39,14 @@ export async function getCredentialsByUserId(userId: string, cipherSecret: strin
   return credentials_dto;
 }
 
+export function getCredentialsByUserId(userId: string, cipherSecret: string) {
+  return unstable_cache(
+    () => internal_getCredentialsByUserId(userId, cipherSecret),
+    [`credentials-${userId}`],
+    { revalidate: 3600, tags: [`credentials-${userId}`] }
+  );
+}
+
 export async function createCredential(credential: any, cipherSecret: string) {
   // Encrypt password
   const password_encryptedData = await encrypt(credential.password, cipherSecret);
@@ -56,6 +65,7 @@ export async function createCredential(credential: any, cipherSecret: string) {
 
   try {
     const result = await credentialsQueries.createCredential(credential);
+    revalidateTag(`credentials-${credential.userId}`)
     return { id: result[0].id };
   } catch (error) {
     console.error(error);

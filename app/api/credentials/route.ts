@@ -49,6 +49,6 @@ export async function GET() {
       { status: 500 },
     );
 
-  let credentials = await getCredentialsByUserId(session.user.id, secret);
+  let credentials = await (getCredentialsByUserId(session.user.id, secret))();
   return Response.json(credentials);
 }
