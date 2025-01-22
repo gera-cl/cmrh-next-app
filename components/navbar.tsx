@@ -34,6 +34,7 @@ import { PiPlusCircleDuotone } from "react-icons/pi";
 
 import { Session } from "next-auth";
 import { User } from "@heroui/user";
+import { useReducer } from "react";
 
 const userMenu = (session: Session | null, status: "authenticated" | "loading" | "unauthenticated") => (
   <Dropdown placement="bottom-end">
@@ -100,9 +101,15 @@ const searchInput = (
 
 export const Navbar = () => {
   const { data: session, status } = useSession()
+  const [isMenuOpen, setIsMenuOpen] = useReducer((current) => !current, false);
 
   return (
-    <NextUINavbar maxWidth="xl" position="sticky">
+    <NextUINavbar
+      maxWidth="xl"
+      position="sticky"
+      isMenuOpen={isMenuOpen}
+      onMenuOpenChange={setIsMenuOpen}
+    >
       <NavbarContent className="basis-1/5 sm:basis-full" justify="start">
         <NavbarBrand as="li" className="gap-3 max-w-fit">
           <NextLink className="flex justify-start items-center gap-1" href="/">
@@ -195,6 +202,7 @@ export const Navbar = () => {
                 href={item.href}
                 color="foreground"
                 size="lg"
+                onPress={() => setIsMenuOpen()}
               >
                 {item.label}
               </Link>
