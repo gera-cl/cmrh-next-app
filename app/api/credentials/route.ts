@@ -28,8 +28,8 @@ export async function POST(request: NextRequest) {
 
   // call service
   const createdCredential = await createCredential(payload, secret);
-  if(createdCredential) {
-    return Response.json(createdCredential);
+  if (createdCredential) {
+    return Response.json(createdCredential, { status: 201 });
   } else {
     return Response.json(
       { error: "Failed to create credential" },

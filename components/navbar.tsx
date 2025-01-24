@@ -22,15 +22,8 @@ import clsx from "clsx";
 
 import { siteConfig } from "@/config/site";
 import { ThemeSwitch } from "@/components/theme-switch";
-import {
-  TwitterIcon,
-  GithubIcon,
-  DiscordIcon,
-  HeartFilledIcon,
-  SearchIcon,
-  Logo,
-} from "@/components/icons";
-import { PiPlusCircleDuotone } from "react-icons/pi";
+import { Logo } from "@/components/icons";
+import { TbCirclePlus, TbSearch } from "react-icons/tb";
 
 import { Session } from "next-auth";
 import { User } from "@heroui/user";
@@ -93,7 +86,7 @@ const searchInput = (
     labelPlacement="outside"
     placeholder="Search..."
     startContent={
-      <SearchIcon className="text-base text-default-400 pointer-events-none flex-shrink-0" />
+      <TbSearch className="text-base text-default-400 pointer-events-none flex-shrink-0" />
     }
     type="search"
   />
@@ -137,43 +130,12 @@ export const Navbar = () => {
           as={Link}
           className="hidden sm:flex ml-2 text-sm font-semibold bg-slate-100 text-slate-700"
           href={siteConfig.links.newCredential}
-          startContent={<PiPlusCircleDuotone className="w-5 h-5" />}
+          startContent={<TbCirclePlus className="w-5 h-5" />}
           variant="solid"
         >
           Add Credential
         </Button>
       </NavbarContent>
-
-      {/* <NavbarContent
-        className="hidden sm:flex basis-1/5 sm:basis-full"
-        justify="end"
-      >
-        <NavbarItem className="hidden sm:flex gap-2">
-          <Link isExternal aria-label="Twitter" href={siteConfig.links.twitter}>
-            <TwitterIcon className="text-default-500" />
-          </Link>
-          <Link isExternal aria-label="Discord" href={siteConfig.links.discord}>
-            <DiscordIcon className="text-default-500" />
-          </Link>
-          <Link isExternal aria-label="Github" href={siteConfig.links.github}>
-            <GithubIcon className="text-default-500" />
-          </Link>
-          <ThemeSwitch />
-        </NavbarItem>
-        <NavbarItem className="hidden lg:flex">{searchInput}</NavbarItem>
-        <NavbarItem className="hidden md:flex">
-          <Button
-            isExternal
-            as={Link}
-            className="text-sm font-normal text-default-600 bg-default-100"
-            href={siteConfig.links.sponsor}
-            startContent={<HeartFilledIcon className="text-danger" />}
-            variant="flat"
-          >
-            Sponsor
-          </Button>
-        </NavbarItem>
-      </NavbarContent> */}
 
       <NavbarContent
         className="hidden sm:flex"
@@ -186,7 +148,7 @@ export const Navbar = () => {
 
       <NavbarContent className="sm:hidden basis-1 pl-4" justify="end">
         <Link aria-label="New Credential" href={siteConfig.links.newCredential}>
-          <PiPlusCircleDuotone className="text-default-500 w-6 h-6" />
+          <TbCirclePlus className="text-default-500 w-6 h-6" />
         </Link>
         <ThemeSwitch />
         {userMenu(session, status)}
