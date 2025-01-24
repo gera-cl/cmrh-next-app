@@ -1,5 +1,6 @@
 "use client"
 
+import React, { SVGProps } from "react";
 import { Button, ButtonGroup } from "@heroui/button";
 import { ChipProps, Chip } from "@heroui/chip";
 import { Dropdown, DropdownTrigger, DropdownMenu, DropdownItem } from "@heroui/dropdown";
@@ -8,11 +9,11 @@ import { Table, TableHeader, TableColumn, TableBody, TableRow, TableCell, Select
 import { SortDescriptor } from "@react-types/shared";
 import { User } from "@heroui/user";
 import { Input } from "@heroui/input";
-import React, { SVGProps } from "react";
-import { CredentialDto } from "@/lib/services/credentials.service";
-import { TbBrowserShare, TbKey, TbUsers, TbSearch, TbPlus, TbChevronDown } from "react-icons/tb";
-import { Tooltip } from "@heroui/tooltip";
+import { Image } from "@heroui/image";
 import { Link } from "@heroui/link";
+import { Tooltip } from "@heroui/tooltip";
+import { TbBrowserShare, TbKey, TbUsers, TbSearch, TbPlus, TbChevronDown } from "react-icons/tb";
+import { CredentialDto } from "@/lib/services/credentials.service";
 import { CopyButton } from "@/components/copy-button";
 import { siteConfig } from "@/config/site";
 
@@ -107,17 +108,25 @@ export default function CredentialsTable(props: { credentials: CredentialDto[] }
     switch (columnKey) {
       case "name":
         return (
-          <User
-            avatarProps={{ radius: "lg", src: '' }}
-            description={credential.url}
-            name={credential.name}
-          >
-            {credential.url}
-          </User>
+          <div className="inline-block">
+            <div className="inline-block mr-2">
+              <Image
+                alt="HeroUI Image with fallback"
+                src="https://app.requestly.io/delay/1000/https://heroui.com/images/fruit-4.jpeg"
+                fallbackSrc="https://via.placeholder.com/300x200"
+                height={36}
+                width={36}
+              />
+            </div>
+            <div className="inline-block max-w-[35vw] sm:max-w-[15vw]">
+              <p className="text-bold font-semibold truncate">{credential.name}</p>
+              <p className="text-bold text-tiny font-extralight truncate">{credential.url}</p>
+            </div>
+          </div>
         );
       case "username":
         return (
-          <div className="flex-col">
+          <div className="flex-col cursor-text">
             <p className="text-bold text-small">{cellValue?.toString()}</p>
           </div>
         );
@@ -272,9 +281,11 @@ export default function CredentialsTable(props: { credentials: CredentialDto[] }
       bottomContentPlacement="outside"
       classNames={{
         wrapper: "max-h-[382px]",
+        td: "max-w-[50vw] sm:max-w-[20vw]",
+        tr: "hover:bg-default-50 cursor-pointer",
       }}
       // selectedKeys={selectedKeys}
-      selectionMode="single"
+      // selectionMode="single"
       sortDescriptor={sortDescriptor}
       topContent={topContent}
       topContentPlacement="outside"
