@@ -108,19 +108,20 @@ export default function CredentialsTable(props: { credentials: CredentialDto[] }
     switch (columnKey) {
       case "name":
         return (
-          <div className="inline-block">
-            <div className="inline-block mr-2">
+          <div className="inline-flex items-center">
+            <div className="block mr-2 min-w-9">
               <Image
-                alt="HeroUI Image with fallback"
-                src="https://app.requestly.io/delay/1000/https://heroui.com/images/fruit-4.jpeg"
-                fallbackSrc="https://via.placeholder.com/300x200"
+                alt="Credential image"
+                src="no-image.png"
+                fallbackSrc="no-image.png"
                 height={36}
                 width={36}
+                radius="lg"
               />
             </div>
-            <div className="inline-block max-w-[35vw] sm:max-w-[15vw]">
-              <p className="text-bold font-semibold truncate">{credential.name}</p>
-              <p className="text-bold text-tiny font-extralight truncate">{credential.url}</p>
+            <div className="flex-1 max-w-[35vw] sm:max-w-[15vw]">
+              <p className="block text-bold font-semibold truncate">{credential.name}</p>
+              <p className="block text-bold text-tiny font-extralight truncate">{credential.url}</p>
             </div>
           </div>
         );
@@ -220,7 +221,7 @@ export default function CredentialsTable(props: { credentials: CredentialDto[] }
         </div>
         <div className="flex justify-between items-center">
           <span className="text-default-400 text-small">Total {props.credentials.length} credentials</span>
-          <label className="flex items-center text-default-400 text-small">
+          {/* <label className="flex items-center text-default-400 text-small">
             Rows per page:
             <select
               className="bg-transparent outline-none text-default-400 text-small"
@@ -230,7 +231,7 @@ export default function CredentialsTable(props: { credentials: CredentialDto[] }
               <option value="10">10</option>
               <option value="15">15</option>
             </select>
-          </label>
+          </label> */}
         </div>
       </div>
     );
@@ -252,7 +253,7 @@ export default function CredentialsTable(props: { credentials: CredentialDto[] }
             ? "All items selected"
             : `${selectedKeys.size} of ${filteredItems.length} selected`}
         </span>
-        {/* <Pagination
+        <Pagination
           isCompact
           showControls
           showShadow
@@ -260,7 +261,7 @@ export default function CredentialsTable(props: { credentials: CredentialDto[] }
           page={page}
           total={pages}
           onChange={setPage}
-        /> */}
+        />
         <div className="hidden sm:flex w-[30%] justify-end gap-2">
           <Button isDisabled={pages === 1} size="sm" variant="flat" onPress={onPreviousPage}>
             Previous
@@ -277,7 +278,7 @@ export default function CredentialsTable(props: { credentials: CredentialDto[] }
     <Table
       isHeaderSticky
       aria-label="Example table with custom cells, pagination and sorting"
-      bottomContent={bottomContent}
+      // bottomContent={bottomContent}
       bottomContentPlacement="outside"
       classNames={{
         wrapper: "max-h-[382px]",
@@ -300,6 +301,7 @@ export default function CredentialsTable(props: { credentials: CredentialDto[] }
             key={column.uid}
             align={column.uid === "actions" ? "center" : "start"}
             allowsSorting={column.sortable}
+            aria-sort="none"
             className={column.uid === "username" ? "hidden sm:table-cell" : ""}
           >
             {column.name}
