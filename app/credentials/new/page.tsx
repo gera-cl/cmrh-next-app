@@ -1,108 +1,26 @@
-"use client";
+import { CreateCredentialDto, CredentialDto, createCredential } from "@/lib/services/credentials.service";
+import CredentialForm from "../credentials-form";
 
-import React from "react";
-import { Button } from "@heroui/button";
-import { Form } from "@heroui/form";
-import { Input, Textarea } from "@heroui/input";
-import { Divider } from "@heroui/divider";
+const secret = process.env.CMRH_ENCRYPTION_SECRET;
 
 export default function NewCredentialPage() {
-  const [action, setAction] = React.useState<null | string>(null);
+  if (!secret)
+    return Response.json(
+      { error: "Missing encryption secret" },
+      { status: 500 },
+    );
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    let data = Object.fromEntries(new FormData(e.currentTarget));
-
-    await fetch("/api/credentials", {
-      method: "POST",
-      body: JSON.stringify(data),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-
-    setAction(`submit ${JSON.stringify(data)}`);
-  };
+  const handleSubmit = async (credential: Partial<CredentialDto>) => {
+    'use server'
+    const result = await createCredential(credential as CreateCredentialDto, secret);
+    if (result) {
+      console.log(`credential create was successful. Id: ${result.id}`);
+    }
+  }
 
   return (
-    <Form
-      className="w-full max-w-md flex flex-col gap-4 px-4"
-      validationBehavior="native"
-      onReset={() => setAction("reset")}
-      onSubmit={handleSubmit}
-    >
-      <span className="text-xl">New credential</span>
-      <Input
-        isRequired
-        errorMessage="Please enter a valid url"
-        label="URL"
-        labelPlacement="outside"
-        name="url"
-        placeholder="Enter the url"
-        type="url"
-      />
-
-      <Input
-        isRequired
-        errorMessage="Please enter a valid name"
-        label="Name"
-        labelPlacement="outside"
-        name="name"
-        placeholder="Enter the credential name"
-        type="text"
-      />
-
-      <Input
-        isRequired
-        errorMessage="Please enter a valid username"
-        label="Username"
-        labelPlacement="outside"
-        name="username"
-        placeholder="Enter your username"
-        type="text"
-      />
-
-      <Input
-        isRequired
-        errorMessage="Please enter a valid password"
-        label="Password"
-        labelPlacement="outside"
-        name="password"
-        placeholder="Enter the password"
-        type="password"
-      />
-
-      <Divider className="my-4" />
-
-      <Input
-        errorMessage="Please enter a valid alternative username"
-        label="Alternative username"
-        labelPlacement="outside"
-        name="alternative_username"
-        placeholder="Enter an alternative username"
-        type="text"
-      />
-
-      <Textarea
-        label="Note"
-        labelPlacement="outside"
-        name="note"
-        placeholder="Enter a note"
-      />
-
-      <div className="flex gap-2">
-        <Button color="primary" type="submit">
-          Submit
-        </Button>
-        <Button type="reset" variant="flat">
-          Reset
-        </Button>
-      </div>
-      {action && (
-        <div className="text-small text-default-500">
-          Action: <code>{action}</code>
-        </div>
-      )}
-    </Form>
+    <div className="flex max-w-full justify-center">
+      <CredentialForm handleSubmit={handleSubmit} className="min-w-[90vw] md:min-w-[70vw] lg:min-w-[40vw]"/>
+    </div>
   );
 }
