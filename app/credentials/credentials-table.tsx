@@ -1,13 +1,13 @@
 "use client"
 
 import React, { SVGProps } from "react";
+import { useRouter } from "next/navigation";
 import { Button, ButtonGroup } from "@heroui/button";
-import { ChipProps, Chip } from "@heroui/chip";
+import { ChipProps } from "@heroui/chip";
 import { Dropdown, DropdownTrigger, DropdownMenu, DropdownItem } from "@heroui/dropdown";
 import { Pagination } from "@heroui/pagination";
 import { Table, TableHeader, TableColumn, TableBody, TableRow, TableCell, Selection } from "@heroui/table";
 import { SortDescriptor } from "@react-types/shared";
-import { User } from "@heroui/user";
 import { Input } from "@heroui/input";
 import { Image } from "@heroui/image";
 import { Link } from "@heroui/link";
@@ -54,7 +54,7 @@ export default function CredentialsTable(props: { credentials: CredentialDto[] }
     direction: "ascending",
   });
 
-  const [isCopied, setIsCopied] = React.useState<{ id: string, copied: boolean }>({ id: "", copied: false })
+  const router = useRouter()
 
   const [page, setPage] = React.useState(1);
 
@@ -310,7 +310,7 @@ export default function CredentialsTable(props: { credentials: CredentialDto[] }
       </TableHeader>
       <TableBody emptyContent={"No credentials found"} items={sortedItems}>
         {(item) => (
-          <TableRow key={item.id}>
+          <TableRow key={item.id} onClick={() => router.push(`/credentials/${item.id}`)}>
             {(columnKey) =>
               <TableCell className={columnKey === "username" ? "hidden sm:table-cell" : ""}>
                 {renderCell(item, columnKey)}
