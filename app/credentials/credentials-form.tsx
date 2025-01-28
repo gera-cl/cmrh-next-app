@@ -5,33 +5,35 @@ import { Button } from "@heroui/button";
 import { Form } from "@heroui/form";
 import { Input, Textarea } from "@heroui/input";
 import { Divider } from "@heroui/divider";
+
 import { CredentialDto } from "@/lib/services/credentials.service";
 
 export default function CredentialForm(props: {
-  credential?: Partial<CredentialDto>
-  handleSubmit: (credential: Partial<CredentialDto>) => Promise<void>
-  className?: string
+  credential?: Partial<CredentialDto>;
+  handleSubmit: (credential: Partial<CredentialDto>) => Promise<void>;
+  className?: string;
 }) {
   const isEditing = Boolean(props.credential);
-  const [credential, setCredential] = React.useState<Partial<CredentialDto> | undefined>(props.credential);
+  const [credential, setCredential] = React.useState<
+    Partial<CredentialDto> | undefined
+  >(props.credential);
   const [isLoading, setIsLoading] = React.useState(false);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     setIsLoading(true);
     e.preventDefault();
 
-    if (credential)
-      await props.handleSubmit(credential);
+    if (credential) await props.handleSubmit(credential);
 
-    setIsLoading(false)
+    setIsLoading(false);
   };
 
   return (
     <Form
       className={"flex flex-col gap-4 px-4 " + props.className}
       validationBehavior="native"
-      onSubmit={handleSubmit}
       onReset={() => setCredential(props.credential)}
+      onSubmit={handleSubmit}
     >
       <span className="text-xl">New credential</span>
       <Input
@@ -67,7 +69,9 @@ export default function CredentialForm(props: {
         placeholder="Enter your username"
         type="text"
         value={credential?.username || ""}
-        onChange={(e) => setCredential({ ...credential, username: e.target.value })}
+        onChange={(e) =>
+          setCredential({ ...credential, username: e.target.value })
+        }
       />
 
       <Input
@@ -79,7 +83,9 @@ export default function CredentialForm(props: {
         placeholder="Enter the password"
         type="password"
         value={credential?.password || ""}
-        onChange={(e) => setCredential({ ...credential, password: e.target.value })}
+        onChange={(e) =>
+          setCredential({ ...credential, password: e.target.value })
+        }
       />
 
       <Divider className="my-4" />
@@ -92,7 +98,13 @@ export default function CredentialForm(props: {
         placeholder="Enter an alternative username"
         type="text"
         value={credential?.alternative_username || ""}
-        onChange={(e) => setCredential({ ...credential, alternative_username: e.target.value.trim().length > 0 ? e.target.value : undefined })}
+        onChange={(e) =>
+          setCredential({
+            ...credential,
+            alternative_username:
+              e.target.value.trim().length > 0 ? e.target.value : undefined,
+          })
+        }
       />
 
       <Textarea
@@ -101,25 +113,38 @@ export default function CredentialForm(props: {
         name="note"
         placeholder="Enter a note"
         value={credential?.note || ""}
-        onChange={(e) => setCredential({ ...credential, note: e.target.value.trim().length > 0 ? e.target.value : undefined })}
+        onChange={(e) =>
+          setCredential({
+            ...credential,
+            note: e.target.value.trim().length > 0 ? e.target.value : undefined,
+          })
+        }
       />
 
       <div className="w-full gap-2 flex flex-col-reverse sm:flex-row sm:justify-end">
         {isEditing && (
-          <Button color="danger" type="button" variant="flat" className="mr-auto">
+          <Button
+            className="mr-auto"
+            color="danger"
+            type="button"
+            variant="flat"
+          >
             Delete
           </Button>
         )}
-        // todo: add reset
-        <Button type="reset" variant="flat" isDisabled>
+        {/* todo: add reset */}
+        <Button isDisabled type="reset" variant="flat">
           Reset
         </Button>
         <Button
-          color="primary"
-          type="submit"
-          isLoading={isLoading}
-          isDisabled={isLoading || JSON.stringify(props.credential) === JSON.stringify(credential)}
           className="w-40"
+          color="primary"
+          isDisabled={
+            isLoading ||
+            JSON.stringify(props.credential) === JSON.stringify(credential)
+          }
+          isLoading={isLoading}
+          type="submit"
         >
           {isEditing ? "Update" : "Create"}
         </Button>

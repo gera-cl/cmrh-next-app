@@ -1,7 +1,12 @@
 import { eq } from "drizzle-orm";
 
 import { db } from "../db";
-import { InsertCredential, SelectCredential, SelectUser, credentialsTable } from "../schema";
+import {
+  InsertCredential,
+  SelectCredential,
+  SelectUser,
+  credentialsTable,
+} from "../schema";
 
 export async function createCredential(data: InsertCredential) {
   return await db.insert(credentialsTable).values(data).returning();
@@ -15,13 +20,13 @@ export async function getCredentialsByUserId(userId: SelectUser["id"]) {
 }
 
 export async function getCredentialById(id: SelectCredential["id"]) {
-  return db
-    .select()
-    .from(credentialsTable)
-    .where(eq(credentialsTable.id, id));
+  return db.select().from(credentialsTable).where(eq(credentialsTable.id, id));
 }
 
-export async function updateCredential(id: SelectCredential["id"], data: Partial<InsertCredential>) {
+export async function updateCredential(
+  id: SelectCredential["id"],
+  data: Partial<InsertCredential>,
+) {
   return await db
     .update(credentialsTable)
     .set(data)

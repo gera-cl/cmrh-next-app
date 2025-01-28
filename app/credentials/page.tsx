@@ -1,5 +1,6 @@
-import { getCredentialsByUserId } from "@/lib/services/credentials.service";
 import CredentialsTable from "./credentials-table";
+
+import { getCredentialsByUserId } from "@/lib/services/credentials.service";
 import { getSession } from "@/lib/auth";
 
 const secret = process.env.CMRH_ENCRYPTION_SECRET;
@@ -14,7 +15,7 @@ export default async function CredentialsPage() {
       { error: "Missing encryption secret" },
       { status: 500 },
     );
-  const data = await (getCredentialsByUserId(session.user.id, secret))();
+  const data = await getCredentialsByUserId(session.user.id, secret)();
 
   return (
     <div>

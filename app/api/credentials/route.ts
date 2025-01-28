@@ -1,7 +1,10 @@
 import { NextRequest } from "next/server";
 
 import { getSession } from "@/lib/auth";
-import { createCredential, getCredentialsByUserId } from "@/lib/services/credentials.service";
+import {
+  createCredential,
+  getCredentialsByUserId,
+} from "@/lib/services/credentials.service";
 
 const secret = process.env.CMRH_ENCRYPTION_SECRET;
 
@@ -28,6 +31,7 @@ export async function POST(request: NextRequest) {
 
   // call service
   const createdCredential = await createCredential(payload, secret);
+
   if (createdCredential) {
     return Response.json(createdCredential, { status: 201 });
   } else {
@@ -49,6 +53,7 @@ export async function GET() {
       { status: 500 },
     );
 
-  let credentials = await (getCredentialsByUserId(session.user.id, secret))();
+  let credentials = await getCredentialsByUserId(session.user.id, secret)();
+
   return Response.json(credentials);
 }

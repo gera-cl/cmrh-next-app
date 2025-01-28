@@ -1,6 +1,6 @@
 "use client";
 
-import { useSession, signOut } from "next-auth/react"
+import { useSession, signOut } from "next-auth/react";
 import {
   Navbar as NextUINavbar,
   NavbarContent,
@@ -16,28 +16,36 @@ import { Link } from "@heroui/link";
 import { Input } from "@heroui/input";
 import { link as linkStyles } from "@heroui/theme";
 import NextLink from "next/link";
-import { Dropdown, DropdownItem, DropdownMenu, DropdownSection, DropdownTrigger } from "@heroui/dropdown";
+import {
+  Dropdown,
+  DropdownItem,
+  DropdownMenu,
+  DropdownSection,
+  DropdownTrigger,
+} from "@heroui/dropdown";
 import { Avatar } from "@heroui/avatar";
 import clsx from "clsx";
-
-import { siteConfig } from "@/config/site";
-import { ThemeSwitch } from "@/components/theme-switch";
-import { Logo } from "@/components/icons";
 import { TbCirclePlus, TbSearch } from "react-icons/tb";
-
 import { Session } from "next-auth";
 import { User } from "@heroui/user";
 import { useReducer } from "react";
 
-const userMenu = (session: Session | null, status: "authenticated" | "loading" | "unauthenticated") => (
+import { Logo } from "@/components/icons";
+import { ThemeSwitch } from "@/components/theme-switch";
+import { siteConfig } from "@/config/site";
+
+const userMenu = (
+  session: Session | null,
+  status: "authenticated" | "loading" | "unauthenticated",
+) => (
   <Dropdown placement="bottom-end">
     <DropdownTrigger>
       <Avatar
         isBordered
         as="button"
         className="transition-transform"
-        radius="lg"
         name={session?.user.name}
+        radius="lg"
         size="sm"
         src={session?.user.image}
       />
@@ -49,18 +57,16 @@ const userMenu = (session: Session | null, status: "authenticated" | "loading" |
             avatarProps={{
               src: session?.user.image,
             }}
+            className=""
             description={
-              <div className="max-w-28 break-words">
-                {session?.user.email}
-              </div>
+              <div className="max-w-28 break-words">{session?.user.email}</div>
             }
             name={session?.user.name}
-            className=""
           />
         </DropdownItem>
       </DropdownSection>
 
-      <DropdownSection >
+      <DropdownSection>
         <DropdownItem key="settings">Profile</DropdownItem>
         <DropdownItem key="configurations">Settings</DropdownItem>
         <DropdownItem key="logout" color="danger" onPress={() => signOut()}>
@@ -69,7 +75,7 @@ const userMenu = (session: Session | null, status: "authenticated" | "loading" |
       </DropdownSection>
     </DropdownMenu>
   </Dropdown>
-)
+);
 
 const searchInput = (
   <Input
@@ -93,14 +99,14 @@ const searchInput = (
 );
 
 export const Navbar = () => {
-  const { data: session, status } = useSession()
+  const { data: session, status } = useSession();
   const [isMenuOpen, setIsMenuOpen] = useReducer((current) => !current, false);
 
   return (
     <NextUINavbar
+      isMenuOpen={isMenuOpen}
       maxWidth="xl"
       position="sticky"
-      isMenuOpen={isMenuOpen}
       onMenuOpenChange={setIsMenuOpen}
     >
       <NavbarContent className="basis-1/5 sm:basis-full" justify="start">
@@ -137,11 +143,7 @@ export const Navbar = () => {
         </Button>
       </NavbarContent>
 
-      <NavbarContent
-        className="hidden sm:flex"
-        as="div"
-        justify="end"
-      >
+      <NavbarContent as="div" className="hidden sm:flex" justify="end">
         <ThemeSwitch />
         {userMenu(session, status)}
       </NavbarContent>
@@ -161,8 +163,8 @@ export const Navbar = () => {
           {siteConfig.navMenuItems.map((item, index) => (
             <NavbarMenuItem key={`${item}-${index}`}>
               <Link
-                href={item.href}
                 color="foreground"
+                href={item.href}
                 size="lg"
                 onPress={() => setIsMenuOpen()}
               >

@@ -1,18 +1,39 @@
-"use client"
+"use client";
 
 import React, { SVGProps } from "react";
 import { useRouter } from "next/navigation";
 import { Button, ButtonGroup } from "@heroui/button";
 import { ChipProps } from "@heroui/chip";
-import { Dropdown, DropdownTrigger, DropdownMenu, DropdownItem } from "@heroui/dropdown";
+import {
+  Dropdown,
+  DropdownTrigger,
+  DropdownMenu,
+  DropdownItem,
+} from "@heroui/dropdown";
 import { Pagination } from "@heroui/pagination";
-import { Table, TableHeader, TableColumn, TableBody, TableRow, TableCell, Selection } from "@heroui/table";
+import {
+  Table,
+  TableHeader,
+  TableColumn,
+  TableBody,
+  TableRow,
+  TableCell,
+  Selection,
+} from "@heroui/table";
 import { SortDescriptor } from "@react-types/shared";
 import { Input } from "@heroui/input";
 import { Image } from "@heroui/image";
 import { Link } from "@heroui/link";
 import { Tooltip } from "@heroui/tooltip";
-import { TbBrowserShare, TbKey, TbUsers, TbSearch, TbPlus, TbChevronDown } from "react-icons/tb";
+import {
+  TbBrowserShare,
+  TbKey,
+  TbUsers,
+  TbSearch,
+  TbPlus,
+  TbChevronDown,
+} from "react-icons/tb";
+
 import { CredentialDto } from "@/lib/services/credentials.service";
 import { CopyButton } from "@/components/copy-button";
 import { siteConfig } from "@/config/site";
@@ -41,9 +62,13 @@ const statusColorMap: Record<string, ChipProps["color"]> = {
 
 const INITIAL_VISIBLE_COLUMNS = ["name", "username", "actions"];
 
-export default function CredentialsTable(props: { credentials: CredentialDto[] }) {
+export default function CredentialsTable(props: {
+  credentials: CredentialDto[];
+}) {
   const [filterValue, setFilterValue] = React.useState("");
-  const [selectedKeys, setSelectedKeys] = React.useState<Selection>(new Set([]));
+  const [selectedKeys, setSelectedKeys] = React.useState<Selection>(
+    new Set([]),
+  );
   const [visibleColumns, setVisibleColumns] = React.useState<Selection>(
     new Set(INITIAL_VISIBLE_COLUMNS),
   );
@@ -54,7 +79,7 @@ export default function CredentialsTable(props: { credentials: CredentialDto[] }
     direction: "ascending",
   });
 
-  const router = useRouter()
+  const router = useRouter();
 
   const [page, setPage] = React.useState(1);
 
@@ -63,7 +88,9 @@ export default function CredentialsTable(props: { credentials: CredentialDto[] }
   const headerColumns = React.useMemo(() => {
     if (visibleColumns === "all") return columns;
 
-    return columns.filter((column) => Array.from(visibleColumns).includes(column.uid));
+    return columns.filter((column) =>
+      Array.from(visibleColumns).includes(column.uid),
+    );
   }, [visibleColumns]);
 
   const filteredItems = React.useMemo(() => {
@@ -102,51 +129,82 @@ export default function CredentialsTable(props: { credentials: CredentialDto[] }
     });
   }, [sortDescriptor, items]);
 
-  const renderCell = React.useCallback((credential: CredentialDto, columnKey: React.Key) => {
-    const cellValue = credential[columnKey as keyof CredentialDto];
+  const renderCell = React.useCallback(
+    (credential: CredentialDto, columnKey: React.Key) => {
+      const cellValue = credential[columnKey as keyof CredentialDto];
 
-    switch (columnKey) {
-      case "name":
-        return (
-          <div className="inline-flex items-center">
-            <div className="block mr-2 min-w-9">
-              <Image
-                alt="Credential image"
-                src="no-image.png"
-                fallbackSrc="no-image.png"
-                height={36}
-                width={36}
-                radius="lg"
+      switch (columnKey) {
+        case "name":
+          return (
+            <div className="inline-flex items-center">
+              <div className="block mr-2 min-w-9">
+                <Image
+                  alt="Credential image"
+                  fallbackSrc="no-image.png"
+                  height={36}
+                  radius="lg"
+                  src="no-image.png"
+                  width={36}
+                />
+              </div>
+              <div className="flex-1 max-w-[35vw] sm:max-w-[15vw]">
+                <p className="block text-bold font-semibold truncate">
+                  {credential.name}
+                </p>
+                <p className="block text-bold text-tiny font-extralight truncate">
+                  {credential.url}
+                </p>
+              </div>
+            </div>
+          );
+        case "username":
+          return (
+            <div className="flex-col cursor-text">
+              <p className="text-bold text-small">{cellValue?.toString()}</p>
+            </div>
+          );
+        case "actions":
+          return (
+            <ButtonGroup
+              className="w-full"
+              color="default"
+              radius="sm"
+              variant="ghost"
+            >
+              <CopyButton
+                ariaLabel="Copy username"
+                className="mx-1"
+                icon={TbUsers}
+                iconClassName="text-cyan-300"
+                textToCopy={credential.username}
               />
-            </div>
-            <div className="flex-1 max-w-[35vw] sm:max-w-[15vw]">
-              <p className="block text-bold font-semibold truncate">{credential.name}</p>
-              <p className="block text-bold text-tiny font-extralight truncate">{credential.url}</p>
-            </div>
-          </div>
-        );
-      case "username":
-        return (
-          <div className="flex-col cursor-text">
-            <p className="text-bold text-small">{cellValue?.toString()}</p>
-          </div>
-        );
-      case "actions":
-        return (
-          <ButtonGroup className="w-full" color="default" variant="ghost" radius="sm">
-            <CopyButton textToCopy={credential.username} ariaLabel="Copy username" icon={TbUsers} className="mx-1" iconClassName="text-cyan-300" />
-            <CopyButton textToCopy={credential.password} ariaLabel="Copy password" icon={TbKey} className="mx-1" iconClassName="text-amber-300" />
-            <Tooltip content="Go to the website">
-              <Button as={Link} href={credential.url} isExternal isIconOnly aria-label="Go to the website" className="mx-1">
-                <TbBrowserShare className="w-5 h-5 text-emerald-400" />
-              </Button>
-            </Tooltip>
-          </ButtonGroup>
-        );
-      default:
-        return cellValue?.toLocaleString();
-    }
-  }, []);
+              <CopyButton
+                ariaLabel="Copy password"
+                className="mx-1"
+                icon={TbKey}
+                iconClassName="text-amber-300"
+                textToCopy={credential.password}
+              />
+              <Tooltip content="Go to the website">
+                <Button
+                  isExternal
+                  isIconOnly
+                  aria-label="Go to the website"
+                  as={Link}
+                  className="mx-1"
+                  href={credential.url}
+                >
+                  <TbBrowserShare className="w-5 h-5 text-emerald-400" />
+                </Button>
+              </Tooltip>
+            </ButtonGroup>
+          );
+        default:
+          return cellValue?.toLocaleString();
+      }
+    },
+    [],
+  );
 
   const onNextPage = React.useCallback(() => {
     if (page < pages) {
@@ -160,10 +218,13 @@ export default function CredentialsTable(props: { credentials: CredentialDto[] }
     }
   }, [page]);
 
-  const onRowsPerPageChange = React.useCallback((e: React.ChangeEvent<HTMLSelectElement>) => {
-    setRowsPerPage(Number(e.target.value));
-    setPage(1);
-  }, []);
+  const onRowsPerPageChange = React.useCallback(
+    (e: React.ChangeEvent<HTMLSelectElement>) => {
+      setRowsPerPage(Number(e.target.value));
+      setPage(1);
+    },
+    [],
+  );
 
   const onSearchChange = React.useCallback((value?: string) => {
     if (value) {
@@ -195,7 +256,10 @@ export default function CredentialsTable(props: { credentials: CredentialDto[] }
           <div className="flex gap-3">
             <Dropdown>
               <DropdownTrigger className="hidden sm:flex">
-                <Button endContent={<TbChevronDown className="text-small" />} variant="flat">
+                <Button
+                  endContent={<TbChevronDown className="text-small" />}
+                  variant="flat"
+                >
                   Columns
                 </Button>
               </DropdownTrigger>
@@ -214,13 +278,20 @@ export default function CredentialsTable(props: { credentials: CredentialDto[] }
                 ))}
               </DropdownMenu>
             </Dropdown>
-            <Button as={Link} href={siteConfig.links.newCredential} color="primary" endContent={<TbPlus />}>
+            <Button
+              as={Link}
+              color="primary"
+              endContent={<TbPlus />}
+              href={siteConfig.links.newCredential}
+            >
               Add New
             </Button>
           </div>
         </div>
         <div className="flex justify-between items-center">
-          <span className="text-default-400 text-small">Total {props.credentials.length} credentials</span>
+          <span className="text-default-400 text-small">
+            Total {props.credentials.length} credentials
+          </span>
           {/* <label className="flex items-center text-default-400 text-small">
             Rows per page:
             <select
@@ -263,10 +334,20 @@ export default function CredentialsTable(props: { credentials: CredentialDto[] }
           onChange={setPage}
         />
         <div className="hidden sm:flex w-[30%] justify-end gap-2">
-          <Button isDisabled={pages === 1} size="sm" variant="flat" onPress={onPreviousPage}>
+          <Button
+            isDisabled={pages === 1}
+            size="sm"
+            variant="flat"
+            onPress={onPreviousPage}
+          >
             Previous
           </Button>
-          <Button isDisabled={pages === 1} size="sm" variant="flat" onPress={onNextPage}>
+          <Button
+            isDisabled={pages === 1}
+            size="sm"
+            variant="flat"
+            onPress={onNextPage}
+          >
             Next
           </Button>
         </div>
@@ -277,9 +358,7 @@ export default function CredentialsTable(props: { credentials: CredentialDto[] }
   return (
     <Table
       isHeaderSticky
-      aria-label="Example table with custom cells, pagination and sorting"
-      // bottomContent={bottomContent}
-      bottomContentPlacement="outside"
+      removeWrapper
       classNames={{
         wrapper: "max-h-[382px]",
         td: "max-w-[50vw] sm:max-w-[20vw]",
@@ -289,11 +368,13 @@ export default function CredentialsTable(props: { credentials: CredentialDto[] }
       // selectionMode="single"
       sortDescriptor={sortDescriptor}
       topContent={topContent}
+      onSortChange={setSortDescriptor}
+      aria-label="Example table with custom cells, pagination and sorting"
+      // bottomContent={bottomContent}
+      bottomContentPlacement="outside"
       topContentPlacement="outside"
       // onSelectionChange={setSelectedKeys}
       onSelectionChange={(e: any) => console.log(`onSelect ${e.currentKey}`)}
-      onSortChange={setSortDescriptor}
-      removeWrapper
     >
       <TableHeader columns={headerColumns}>
         {(column) => (
@@ -310,11 +391,19 @@ export default function CredentialsTable(props: { credentials: CredentialDto[] }
       </TableHeader>
       <TableBody emptyContent={"No credentials found"} items={sortedItems}>
         {(item) => (
-          <TableRow key={item.id} onClick={() => router.push(`/credentials/${item.id}`)}>
-            {(columnKey) =>
-              <TableCell className={columnKey === "username" ? "hidden sm:table-cell" : ""}>
+          <TableRow
+            key={item.id}
+            onClick={() => router.push(`/credentials/${item.id}`)}
+          >
+            {(columnKey) => (
+              <TableCell
+                className={
+                  columnKey === "username" ? "hidden sm:table-cell" : ""
+                }
+              >
                 {renderCell(item, columnKey)}
-              </TableCell>}
+              </TableCell>
+            )}
           </TableRow>
         )}
       </TableBody>
