@@ -124,7 +124,7 @@ export default function CredentialForm(props: {
       <div className="w-full gap-2 flex flex-col-reverse sm:flex-row sm:justify-end">
         {isEditing && (
           <Button
-            className="mr-auto"
+            className="sm:mr-auto"
             color="danger"
             type="button"
             variant="flat"
@@ -137,7 +137,7 @@ export default function CredentialForm(props: {
           Reset
         </Button>
         <Button
-          className="w-40"
+          className="sm:w-40"
           color="primary"
           isDisabled={
             isLoading ||
