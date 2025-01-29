@@ -1,9 +1,11 @@
+import { redirect } from "next/navigation";
 import CredentialForm from "../credentials-form";
 
 import {
   CredentialDto,
   getCredentialById,
   updateCredential,
+  deleteCredential,
 } from "@/lib/services/credentials.service";
 
 const secret = process.env.CMRH_ENCRYPTION_SECRET;
@@ -14,20 +16,21 @@ export default async function CredentialDetails({
   params: Promise<{ credential: string }>;
 }) {
   if (!secret)
-    return Response.json(
-      { error: "Missing encryption secret" },
-      { status: 500 },
-    );
+    throw Error("Missing encryption secret");
 
   const credentialId = (await params).credential;
   const credential = await getCredentialById(credentialId, secret);
+
   const handleSubmit = async (credential: Partial<CredentialDto>) => {
     "use server";
     const result = await updateCredential(credentialId, credential, secret);
+    return result ? true : false;
+  };
 
-    if (result) {
-      console.log("credential update was successful");
-    }
+  const handleDelete = async (id: string) => {
+    "use server";
+    const result = await deleteCredential(id);
+    return result && result.length > 0 ? true : false;
   };
 
   return (
@@ -36,6 +39,7 @@ export default async function CredentialDetails({
         className="min-w-[90vw] md:min-w-[70vw] lg:min-w-[40vw]"
         credential={credential}
         handleSubmit={handleSubmit}
+        handleDelete={handleDelete}
       />
     </div>
   );

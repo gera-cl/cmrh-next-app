@@ -24,6 +24,7 @@ import { SortDescriptor } from "@react-types/shared";
 import { Input } from "@heroui/input";
 import { Image } from "@heroui/image";
 import { Link } from "@heroui/link";
+import { Snippet } from "@heroui/snippet";
 import { Tooltip } from "@heroui/tooltip";
 import {
   TbBrowserShare,
@@ -140,10 +141,10 @@ export default function CredentialsTable(props: {
               <div className="block mr-2 min-w-9">
                 <Image
                   alt="Credential image"
-                  fallbackSrc="no-image.png"
+                  fallbackSrc="/no-image.png"
                   height={36}
                   radius="lg"
-                  src="no-image.png"
+                  src="/no-image.png"
                   width={36}
                 />
               </div>
@@ -159,9 +160,19 @@ export default function CredentialsTable(props: {
           );
         case "username":
           return (
-            <div className="flex-col cursor-text">
-              <p className="text-bold text-small">{cellValue?.toString()}</p>
-            </div>
+            <Snippet
+              hideSymbol
+              radius="none"
+              classNames={{
+                base: "pl-0 py-0 bg-transparent",
+                copyButton: "opacity-40",
+              }}
+            >
+              {cellValue?.toString()}
+            </Snippet>
+            // <div className="flex-col cursor-text" onClick={(e) => { e.stopPropagation(); console.log('clicked')}}>
+            //   <p className="text-bold text-small">{cellValue?.toString()}</p>
+            // </div>
           );
         case "actions":
           return (
