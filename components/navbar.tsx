@@ -116,7 +116,7 @@ export const Navbar = () => {
             <p className="font-bold text-inherit">CUMORAH</p>
           </NextLink>
         </NavbarBrand>
-        <ul className="hidden sm:flex gap-4 justify-start ml-2">
+        <ul className="hidden sm:flex gap-6 justify-start ml-4">
           {siteConfig.navItems.map((item) => (
             <NavbarItem key={item.href}>
               <NextLink
@@ -134,7 +134,7 @@ export const Navbar = () => {
         </ul>
         <Button
           as={Link}
-          className="hidden sm:flex ml-2 text-sm font-semibold bg-slate-100 text-slate-700"
+          className="hidden sm:flex ml-4 text-sm font-semibold bg-slate-100 text-slate-700"
           href={siteConfig.links.newCredential}
           startContent={<TbCirclePlus className="w-5 h-5" />}
           variant="solid"

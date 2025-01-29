@@ -57,13 +57,10 @@ export async function createCredential(
 
   try {
     const result = await credentialsQueries.createCredential(newCredential);
-
     revalidateTag(`credentials-${credential.userId}`);
-
     return { id: result[0].id };
   } catch (error) {
     console.error(error);
-
     return null;
   }
 }
@@ -112,13 +109,22 @@ export async function updateCredential(
       parseInt(id),
       credential,
     );
-
     revalidateTag(`credentials-${credential.userId}`);
-
     return result;
   } catch (error) {
     console.error(error);
+    return null;
+  }
+}
 
+export async function deleteCredential(id: string) {
+  try {
+    const result = await credentialsQueries.deleteCredential(parseInt(id));
+    // ! the revalidation closes the delete confirmation modal
+    revalidateTag(`credentials-${result[0].userId}`);
+    return result;
+  } catch (error) {
+    console.error(error);
     return null;
   }
 }
@@ -137,10 +143,10 @@ async function getCredentialDto(
     }),
     credential.note && credential.note_iv && credential.note_authTag
       ? decrypt(cipherSecret, {
-          encryptedText: credential.note,
-          iv: credential.note_iv,
-          authTag: credential.note_authTag,
-        })
+        encryptedText: credential.note,
+        iv: credential.note_iv,
+        authTag: credential.note_authTag,
+      })
       : undefined,
   ]).then(([password, note]) => ({
     ...credential,
