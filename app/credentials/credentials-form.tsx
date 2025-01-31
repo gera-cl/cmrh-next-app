@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { Button } from "@heroui/button";
 import { Form } from "@heroui/form";
 import { Input, Textarea } from "@heroui/input";
@@ -14,7 +14,7 @@ import { CredentialDto } from "@/lib/services/credentials.service";
 import { TbArrowBack } from "react-icons/tb";
 
 export default function CredentialForm(props: {
-  handleSubmit: (credential: Partial<CredentialDto>) => Promise<boolean>;
+  handleSubmit: (credential: Partial<CredentialDto>) => Promise<{ id: number } | null>;
   handleDelete?: (id: string) => Promise<boolean>;
   handleDeleteSuccess?: () => Promise<void>;
   credential?: Partial<CredentialDto>;
@@ -27,6 +27,7 @@ export default function CredentialForm(props: {
   const [isSubmitLoading, setIsSubmitLoading] = React.useState(false);
   const [status, setStatus] = React.useState<"successful" | "failed" | null>(null);
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const [createdCredential, setCreatedCredential] = useState<string | null>(null);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     setIsSubmitLoading(true);
@@ -35,6 +36,14 @@ export default function CredentialForm(props: {
     if (credential) {
       const result = await props.handleSubmit(credential);
       setStatus(result ? "successful" : "failed");
+
+      if (isEditing) {
+      } else {
+        if (result) {
+          setCreatedCredential(result ? result.id.toString() : null);
+          setCredential(undefined)
+        }
+      }
     }
 
     setIsSubmitLoading(false);
@@ -153,6 +162,13 @@ export default function CredentialForm(props: {
             <Alert
               color={status === "successful" ? "success" : "danger"}
               title={`Credential ${isEditing ? "updated" : "created"} ${status === "successful" ? "successfully" : "with errors"}`}
+              endContent={status === "successful" && !isEditing &&
+                <Button as={Link} href={`/credentials/${createdCredential}`} color="success" size="sm" variant="flat">
+                  View Credential
+                </Button>
+                || status === "failed" &&
+                <Button size="sm" variant="flat" type="submit" color="danger">Retry</Button>
+              }
             />
           </div>
         )}
