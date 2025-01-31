@@ -24,7 +24,7 @@ export default async function CredentialDetails({
   const handleSubmit = async (credential: Partial<CredentialDto>) => {
     "use server";
     const result = await updateCredential(credentialId, credential, secret);
-    return result ? true : false;
+    return result;
   };
 
   const handleDelete = async (id: string) => {

@@ -23,13 +23,13 @@ export default async function NewCredentialPage() {
     if (session && session.user.id) {
       credential.userId = parseInt(session.user.id)
     } else {
-      return false
+      return null
     }
     const result = await createCredential(
       credential as CreateCredentialDto,
       secret,
     );
-    return result ? true : false;
+    return result;
   };
 
   return (

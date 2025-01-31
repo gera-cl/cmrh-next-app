@@ -110,7 +110,7 @@ export async function updateCredential(
       credential,
     );
     revalidateTag(`credentials-${credential.userId}`);
-    return result;
+    return { id: result[0].id };
   } catch (error) {
     console.error(error);
     return null;

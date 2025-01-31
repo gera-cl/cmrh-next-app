@@ -24,7 +24,7 @@ export default function ConfirmationDialog(props: {
 
   useEffect(() => {
     if (status !== "loading" && status !== "idle") {
-      sleep(2000).then(() => {
+      sleep(400).then(() => {
         if (status === "success") redirect('/credentials');
       }).finally(() => {
         props.onClose();
