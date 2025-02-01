@@ -1,7 +1,7 @@
 import { Tooltip } from "@heroui/tooltip";
 import { Button } from "@heroui/button";
 import { FC, ComponentProps, useState } from "react";
-import { IoCheckmarkDoneSharp } from "react-icons/io5";
+import { TbCheck } from "react-icons/tb";
 
 type CopyButtonProps = {
   textToCopy: string;
@@ -27,12 +27,12 @@ export const CopyButton = (props: CopyButtonProps) => {
       <Button
         isIconOnly
         aria-label={props.ariaLabel}
-        className={`${isCopied ? "bg-green-500" : ""} ${props.className}`}
+        // className={`${isCopied ? "bg-green-500" : ""} ${props.className}`}
         onPress={handleCopy}
       >
         <div className="w-full h-full flex items-center justify-center">
           {isCopied ? (
-            <IoCheckmarkDoneSharp className="text-white h-5 w-5" />
+            <TbCheck className="text-white h-5 w-5" />
           ) : (
             <props.icon className={`h-5 w-5 ${props.iconClassName || ""}`} />
           )}

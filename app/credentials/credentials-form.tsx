@@ -11,7 +11,14 @@ import { useDisclosure } from "@heroui/modal";
 
 import ConfirmationDialog from "@/components/confirmation-dialog";
 import { CredentialDto } from "@/lib/services/credentials.service";
-import { TbArrowBack } from "react-icons/tb";
+
+import {
+  TbArrowBack,
+  TbBrowserShare,
+  TbCopy,
+  TbEye,
+  TbEyeOff,
+} from "react-icons/tb";
 
 export default function CredentialForm(props: {
   handleSubmit: (credential: Partial<CredentialDto>) => Promise<{ id: number } | null>;
@@ -28,6 +35,9 @@ export default function CredentialForm(props: {
   const [status, setStatus] = React.useState<"successful" | "failed" | null>(null);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [createdCredential, setCreatedCredential] = useState<string | null>(null);
+  const [isPasswordVisible, setIsPasswordVisible] = React.useState(false);
+
+  const togglePasswordVisibility = () => setIsPasswordVisible(!isPasswordVisible);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     setIsSubmitLoading(true);
@@ -83,6 +93,18 @@ export default function CredentialForm(props: {
           type="url"
           value={credential?.url || ""}
           onChange={(e) => setCredential({ ...credential, url: e.target.value })}
+          endContent={
+            isEditing &&
+            <Button
+              as={Link}
+              isExternal
+              href={credential?.url}
+              variant="light"
+              isIconOnly
+            >
+              <TbBrowserShare className="w-5 h-5" />
+            </Button>
+          }
         />
 
         <Input
@@ -109,6 +131,16 @@ export default function CredentialForm(props: {
           onChange={(e) =>
             setCredential({ ...credential, username: e.target.value })
           }
+          endContent={
+            isEditing &&
+            <Button
+              variant="light"
+              onPress={() => navigator.clipboard.writeText(credential?.username || "")}
+              isIconOnly
+            >
+              <TbCopy className="w-5 h-5" />
+            </Button>
+          }
         />
 
         <Input
@@ -118,10 +150,31 @@ export default function CredentialForm(props: {
           labelPlacement="outside"
           name="password"
           placeholder="Enter the password"
-          type="password"
+          type={isPasswordVisible ? "text" : "password"}
           value={credential?.password || ""}
           onChange={(e) =>
             setCredential({ ...credential, password: e.target.value })
+          }
+          endContent={
+            <>
+              {
+                isEditing &&
+                <Button
+                  variant="light"
+                  onPress={() => navigator.clipboard.writeText(credential?.password || "")}
+                  isIconOnly
+                >
+                  <TbCopy className="w-5 h-5" />
+                </Button>
+              }
+              <Button
+                variant="light"
+                onPress={togglePasswordVisibility}
+                isIconOnly
+              >
+                {isPasswordVisible ? <TbEyeOff className="w-5 h-5" /> : <TbEye className="w-5 h-5" />}
+              </Button>
+            </>
           }
         />
 
@@ -141,6 +194,15 @@ export default function CredentialForm(props: {
               alternative_username:
                 e.target.value.trim().length > 0 ? e.target.value : undefined,
             })
+          }
+          endContent={isEditing &&
+            <Button
+              variant="light"
+              onPress={() => navigator.clipboard.writeText(credential?.alternative_username || "")}
+              isIconOnly
+            >
+              <TbCopy className="w-5 h-5" />
+            </Button>
           }
         />
 
@@ -185,7 +247,10 @@ export default function CredentialForm(props: {
               Delete
             </Button>
           )}
-          <Button isDisabled type="reset" variant="flat">
+          <Button
+            type="reset"
+            variant="flat"
+          >
             Reset
           </Button>
           <Button
