@@ -10,6 +10,7 @@ import { Alert } from "@heroui/alert";
 import { useDisclosure } from "@heroui/modal";
 
 import ConfirmationDialog from "@/components/confirmation-dialog";
+import { CopyButton } from "@/components/copy-button";
 import { CredentialDto } from "@/lib/services/credentials.service";
 
 import {
@@ -133,13 +134,7 @@ export default function CredentialForm(props: {
           }
           endContent={
             isEditing &&
-            <Button
-              variant="light"
-              onPress={() => navigator.clipboard.writeText(credential?.username || "")}
-              isIconOnly
-            >
-              <TbCopy className="w-5 h-5" />
-            </Button>
+            <CopyButton variant="light" textToCopy={credential?.username || ""} icon={TbCopy} />
           }
         />
 
@@ -159,13 +154,7 @@ export default function CredentialForm(props: {
             <>
               {
                 isEditing &&
-                <Button
-                  variant="light"
-                  onPress={() => navigator.clipboard.writeText(credential?.password || "")}
-                  isIconOnly
-                >
-                  <TbCopy className="w-5 h-5" />
-                </Button>
+                <CopyButton variant="light" textToCopy={credential?.password || ""} icon={TbCopy} />
               }
               <Button
                 variant="light"
@@ -196,13 +185,7 @@ export default function CredentialForm(props: {
             })
           }
           endContent={isEditing &&
-            <Button
-              variant="light"
-              onPress={() => navigator.clipboard.writeText(credential?.alternative_username || "")}
-              isIconOnly
-            >
-              <TbCopy className="w-5 h-5" />
-            </Button>
+            <CopyButton variant="light" textToCopy={credential?.alternative_username || ""} icon={TbCopy} />
           }
         />
 
