@@ -3,10 +3,11 @@ import CredentialForm from "../credentials-form";
 
 import {
   CredentialDto,
-  getCredentialById,
   updateCredential,
   deleteCredential,
+  getCredentialById_cached,
 } from "@/lib/services/credentials.service";
+import { getSession } from "@/lib/auth";
 
 const secret = process.env.CMRH_ENCRYPTION_SECRET;
 
@@ -15,11 +16,15 @@ export default async function CredentialDetails({
 }: {
   params: Promise<{ credential: string }>;
 }) {
+  const session = await getSession();
+
+  if (!session)
+    redirect('/api/auth/signin');
   if (!secret)
     throw Error("Missing encryption secret");
 
   const credentialId = (await params).credential;
-  const credential = await getCredentialById(credentialId, secret);
+  const credential = await getCredentialById_cached(credentialId, session.user.id!, secret);
 
   const handleSubmit = async (credential: Partial<CredentialDto>) => {
     "use server";

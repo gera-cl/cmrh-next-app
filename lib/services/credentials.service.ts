@@ -1,6 +1,5 @@
-import { revalidateTag, unstable_cache } from "next/cache";
-
-import { encrypt, decrypt } from "../util/cipher.util";
+import { encrypt, decrypt } from "@/lib/util/cipher.util";
+import { cache, revalidateTag } from "@/lib/util/cache.util";
 
 import * as credentialsQueries from "@/lib/db/queries/credentials.queries";
 
@@ -20,7 +19,7 @@ async function internal_getCredentialsByUserId(
 }
 
 export function getCredentialsByUserId(userId: string, cipherSecret: string) {
-  return unstable_cache(
+  return cache(
     () => internal_getCredentialsByUserId(userId, cipherSecret),
     [`credentials-${userId}`],
     { revalidate: 3600, tags: [`credentials-${userId}`] },
@@ -74,6 +73,17 @@ export async function getCredentialById(id: string, cipherSecret: string) {
   return getCredentialDto(credential[0], cipherSecret);
 }
 
+export async function getCredentialById_cached(id: string, userId: string, cipherSecret: string) {
+  const credentials = await getCredentialsByUserId(userId, cipherSecret)();
+  if (credentials.length === 0) return undefined;
+  let credential = credentials.find((c) => c.id === parseInt(id));
+  if (credential) {
+    credential.createdAt = new Date(credential?.createdAt!);
+    credential.updatedAt = new Date(credential?.updatedAt!);
+  }
+  return credential;
+}
+
 export async function updateCredential(
   id: string,
   credential: Partial<CredentialFullDto>,
@@ -120,7 +130,6 @@ export async function updateCredential(
 export async function deleteCredential(id: string) {
   try {
     const result = await credentialsQueries.deleteCredential(parseInt(id));
-    // ! the revalidation closes the delete confirmation modal
     revalidateTag(`credentials-${result[0].userId}`);
     return result;
   } catch (error) {
