@@ -38,6 +38,7 @@ import {
 import { CredentialDto } from "@/lib/services/credentials.service";
 import { CopyButton } from "@/components/copy-button";
 import { siteConfig } from "@/config/site";
+import clsx from "clsx";
 
 export type IconSvgProps = SVGProps<SVGSVGElement> & {
   size?: number;
@@ -177,24 +178,26 @@ export default function CredentialsTable(props: {
         case "actions":
           return (
             <ButtonGroup
-              className="w-full"
+              className="flex justify-end sm:justify-center"
               color="default"
               radius="sm"
               variant="ghost"
             >
               <CopyButton
-                ariaLabel="Copy username"
-                className="mx-1"
                 icon={TbUsers}
                 iconClassName="text-cyan-300"
                 textToCopy={credential.username}
+                variant="ghost"
+                addTooltip
+                tooltipText="Copy username"
               />
               <CopyButton
-                ariaLabel="Copy password"
-                className="mx-1"
                 icon={TbKey}
                 iconClassName="text-amber-300"
                 textToCopy={credential.password}
+                variant="ghost"
+                addTooltip
+                tooltipText="Copy password"
               />
               <Tooltip content="Go to the website">
                 <Button
@@ -408,9 +411,10 @@ export default function CredentialsTable(props: {
           >
             {(columnKey) => (
               <TableCell
-                className={
-                  columnKey === "username" ? "hidden sm:table-cell" : ""
-                }
+                className={clsx(
+                  columnKey === "username" && "hidden sm:table-cell",
+                  columnKey === "actions" && "px-1 sm:px-3"
+                )}
               >
                 {renderCell(item, columnKey)}
               </TableCell>

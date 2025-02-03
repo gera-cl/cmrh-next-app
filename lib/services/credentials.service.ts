@@ -76,12 +76,7 @@ export async function getCredentialById(id: string, cipherSecret: string) {
 export async function getCredentialById_cached(id: string, userId: string, cipherSecret: string) {
   const credentials = await getCredentialsByUserId(userId, cipherSecret)();
   if (credentials.length === 0) return undefined;
-  let credential = credentials.find((c) => c.id === parseInt(id));
-  if (credential) {
-    credential.createdAt = new Date(credential?.createdAt!);
-    credential.updatedAt = new Date(credential?.updatedAt!);
-  }
-  return credential;
+  return credentials.find((c) => c.id === parseInt(id));
 }
 
 export async function updateCredential(
@@ -113,6 +108,9 @@ export async function updateCredential(
     credential.note_iv = null;
     credential.note_authTag = null;
   }
+
+  // Remove updated_at
+  delete credential.updatedAt;
 
   try {
     const result = await credentialsQueries.updateCredential(

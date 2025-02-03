@@ -5,10 +5,11 @@ import { TbCheck } from "react-icons/tb";
 
 type CopyButtonProps = {
   textToCopy: string;
-  ariaLabel: string;
   icon: FC<ComponentProps<"svg">>;
+  variant?: "solid" | "light" | "bordered" | "flat" | "faded" | "shadow" | "ghost";
   iconClassName?: string;
-  className?: string;
+  addTooltip?: boolean;
+  tooltipText?: string;
 };
 
 export const CopyButton = (props: CopyButtonProps) => {
@@ -22,22 +23,25 @@ export const CopyButton = (props: CopyButtonProps) => {
     }, 1000);
   };
 
+  const button = (
+    <Button
+      isIconOnly
+      aria-label={props.tooltipText ? props.tooltipText : "Copy"}
+      variant={props.variant || "solid"}
+      onPress={handleCopy}
+    >
+      {isCopied ? (
+        <TbCheck className="text-white h-5 w-5" />
+      ) : (
+        <props.icon className={`h-5 w-5 ${props.iconClassName || ""}`} />
+      )}
+    </Button>
+  )
   return (
-    <Tooltip content={props.ariaLabel}>
-      <Button
-        isIconOnly
-        aria-label={props.ariaLabel}
-        // className={`${isCopied ? "bg-green-500" : ""} ${props.className}`}
-        onPress={handleCopy}
-      >
-        <div className="w-full h-full flex items-center justify-center">
-          {isCopied ? (
-            <TbCheck className="text-white h-5 w-5" />
-          ) : (
-            <props.icon className={`h-5 w-5 ${props.iconClassName || ""}`} />
-          )}
-        </div>
-      </Button>
-    </Tooltip>
+    props.addTooltip || false ?
+      <Tooltip content={props.tooltipText}>
+        {button}
+      </Tooltip>
+      : button
   );
 };
