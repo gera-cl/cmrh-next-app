@@ -2,6 +2,7 @@ import "@/styles/globals.css";
 import { Metadata, Viewport } from "next";
 import clsx from "clsx";
 import { Session } from "next-auth";
+import { SpeedInsights } from "@vercel/speed-insights/next"
 
 import { Providers } from "./providers";
 
@@ -58,6 +59,7 @@ export default function RootLayout({
             <footer className="w-full flex items-center justify-center py-10" />
           </div>
         </Providers>
+        <SpeedInsights />
       </body>
     </html>
   );
