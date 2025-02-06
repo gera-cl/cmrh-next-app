@@ -2,6 +2,7 @@
 
 import React, { SVGProps } from "react";
 import { useRouter } from "next/navigation";
+import { Avatar } from "@heroui/avatar";
 import { Button, ButtonGroup } from "@heroui/button";
 import { ChipProps } from "@heroui/chip";
 import {
@@ -22,7 +23,6 @@ import {
 } from "@heroui/table";
 import { SortDescriptor } from "@react-types/shared";
 import { Input } from "@heroui/input";
-import { Image } from "@heroui/image";
 import { Link } from "@heroui/link";
 import { Snippet } from "@heroui/snippet";
 import { Tooltip } from "@heroui/tooltip";
@@ -37,6 +37,7 @@ import {
 
 import { CredentialDto } from "@/lib/services/credentials.service";
 import { CopyButton } from "@/components/copy-button";
+import { AvatarFallback } from "@/components/avatar-fallback";
 import { siteConfig } from "@/config/site";
 import clsx from "clsx";
 
@@ -140,13 +141,16 @@ export default function CredentialsTable(props: {
           return (
             <div className="inline-flex items-center">
               <div className="block mr-2 min-w-9">
-                <Image
+                <Avatar
                   alt="Credential image"
-                  fallbackSrc="/no-image.png"
-                  height={36}
-                  radius="lg"
-                  src="/no-image.png"
-                  width={36}
+                  size="md"
+                  radius="full"
+                  src={`/api/icons?domain=${credential.url}&size=64`}
+                  name={credential.name}
+                  showFallback
+                  fallback={
+                    <AvatarFallback letter={credential.name[0]} size={36} />
+                  }
                 />
               </div>
               <div className="flex-1 max-w-[35vw] sm:max-w-[15vw]">
