@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import { useRouter } from "next/navigation";
 import { Button } from "@heroui/button";
 import { Form } from "@heroui/form";
 import { Input, Textarea } from "@heroui/input";
@@ -37,6 +38,7 @@ export default function CredentialForm(props: {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [createdCredential, setCreatedCredential] = useState<string | null>(null);
   const [isPasswordVisible, setIsPasswordVisible] = React.useState(false);
+  const router = useRouter();
 
   const togglePasswordVisibility = () => setIsPasswordVisible(!isPasswordVisible);
 
@@ -77,9 +79,9 @@ export default function CredentialForm(props: {
           <Button
             as={Link}
             color="secondary"
-            href="/credentials"
             variant="flat"
             endContent={<TbArrowBack className="text-lg" />}
+            onPress={() => router.back()}
           >
             Go back
           </Button>

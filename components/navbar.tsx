@@ -48,6 +48,7 @@ const userMenu = (
         radius="lg"
         size="sm"
         src={session?.user.image}
+        alt="Profile"
       />
     </DropdownTrigger>
     <DropdownMenu aria-label="Profile Actions" variant="flat">

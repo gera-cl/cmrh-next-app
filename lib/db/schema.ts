@@ -1,4 +1,4 @@
-import { integer, pgTable, serial, text, timestamp } from "drizzle-orm/pg-core";
+import { index, integer, pgTable, serial, text, timestamp } from "drizzle-orm/pg-core";
 
 export const usersTable = pgTable("users_table", {
   id: serial("id").primaryKey(),
@@ -30,7 +30,11 @@ export const credentialsTable = pgTable("credentials_table", {
   updatedAt: timestamp("updated_at")
     .notNull()
     .$onUpdate(() => new Date()),
-});
+},
+  (t) => [
+    index('user_id_index').on(t.userId),
+  ]
+);
 
 export type InsertUser = typeof usersTable.$inferInsert;
 export type SelectUser = typeof usersTable.$inferSelect;
