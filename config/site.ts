@@ -5,12 +5,8 @@ export const siteConfig = {
   description: "Keep your valuable information hidden.",
   navItems: [
     {
-      label: "Home",
-      href: "/",
-    },
-    {
       label: "Credentials",
-      href: "/credentials",
+      href: "/",
     },
   ],
   navMenuItems: [
@@ -20,7 +16,7 @@ export const siteConfig = {
     },
     {
       label: "Credentials",
-      href: "/credentials",
+      href: "/",
     },
   ],
   links: {

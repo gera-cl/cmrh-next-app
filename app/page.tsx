@@ -1,56 +1,32 @@
-import { Link } from "@heroui/link";
-import { Snippet } from "@heroui/snippet";
-import { Code } from "@heroui/code";
-import { button as buttonStyles } from "@heroui/theme";
+import { redirect } from 'next/navigation';
+import { Suspense } from 'react';
+import CredentialsLoader from "@/components/credentials-loader";
+import LoadingSpinner from "@/components/loading-spinner";
+import { getCredentialsByUserId } from "@/lib/services/credentials.service";
+import { getSession } from "@/lib/auth";
 
-import { siteConfig } from "@/config/site";
-import { title, subtitle } from "@/components/primitives";
-import { GithubIcon } from "@/components/icons";
+const secret = process.env.CMRH_ENCRYPTION_SECRET;
 
-export default function Home() {
+export default async function HomePage() {
+  const session = await getSession();
+
+  if (!session) {
+    redirect('/api/auth/signin');
+  }
+
+  if (!secret) {
+    throw Error("Missing encryption secret");
+  }
+
+  let data: any[] = [];
+  if (session && session.user.id) {
+    data = await getCredentialsByUserId(session.user.id, secret)();
+    data = data.sort((a, b) => a.name.localeCompare(b.name));
+  }
+
   return (
-    <section className="flex flex-col items-center justify-center gap-4 py-8 md:py-10">
-      <div className="inline-block max-w-xl text-center justify-center">
-        <span className={title()}>Make&nbsp;</span>
-        <span className={title({ color: "violet" })}>beautiful&nbsp;</span>
-        <br />
-        <span className={title()}>
-          websites regardless of your design experience.
-        </span>
-        <div className={subtitle({ class: "mt-4" })}>
-          Beautiful, fast and modern React UI library.
-        </div>
-      </div>
-
-      <div className="flex gap-3">
-        <Link
-          isExternal
-          className={buttonStyles({
-            color: "primary",
-            radius: "full",
-            variant: "shadow",
-          })}
-          href={siteConfig.links.docs}
-        >
-          Documentation
-        </Link>
-        <Link
-          isExternal
-          className={buttonStyles({ variant: "bordered", radius: "full" })}
-          href={siteConfig.links.github}
-        >
-          <GithubIcon size={20} />
-          GitHub
-        </Link>
-      </div>
-
-      <div className="mt-8">
-        <Snippet hideCopyButton hideSymbol variant="bordered">
-          <span>
-            Get started by editing <Code color="primary">app/page.tsx</Code>
-          </span>
-        </Snippet>
-      </div>
-    </section>
+    <Suspense fallback={<LoadingSpinner message="Loading your secure credentials..." />}>
+      <CredentialsLoader initialCredentials={data} />
+    </Suspense>
   );
 }
