@@ -8,6 +8,10 @@ export const siteConfig = {
       label: "Credentials",
       href: "/",
     },
+    {
+      label: "Password Generator",
+      href: "/password-generator",
+    },
   ],
   navMenuItems: [
     {
@@ -17,6 +21,10 @@ export const siteConfig = {
     {
       label: "Credentials",
       href: "/",
+    },
+    {
+      label: "Password Generator",
+      href: "/password-generator",
     },
   ],
   links: {

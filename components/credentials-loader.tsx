@@ -14,18 +14,25 @@ export default function CredentialsLoader({ initialCredentials }: CredentialsLoa
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Simular un pequeño delay para mostrar la animación de loading
-    // y luego cargar las credenciales
+    // Determinar el tiempo de loading basado en si hay credenciales para procesar
+    const hasCredentials = initialCredentials && initialCredentials.length > 0;
+    const loadingTime = hasCredentials ? 300 : 150; // Menos tiempo si no hay nada que procesar
+    
     const timer = setTimeout(() => {
       setCredentials(initialCredentials);
       setIsLoading(false);
-    }, 800); // 800ms para una experiencia suave
+    }, loadingTime);
 
     return () => clearTimeout(timer);
   }, [initialCredentials]);
 
   if (isLoading) {
-    return <LoadingSpinner message="Decrypting your secure credentials..." />;
+    const hasCredentials = initialCredentials && initialCredentials.length > 0;
+    const message = hasCredentials 
+      ? "Decrypting your secure credentials..." 
+      : "Loading credentials...";
+    
+    return <LoadingSpinner message={message} />;
   }
 
   return (
