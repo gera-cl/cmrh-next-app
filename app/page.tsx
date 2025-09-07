@@ -1,5 +1,6 @@
-import { redirect } from 'next/navigation';
-import { Suspense } from 'react';
+import { redirect } from "next/navigation";
+import { Suspense } from "react";
+
 import CredentialsLoader from "@/components/credentials-loader";
 import LoadingSpinner from "@/components/loading-spinner";
 import { getCredentialsByUserId } from "@/lib/services/credentials.service";
@@ -11,7 +12,7 @@ export default async function HomePage() {
   const session = await getSession();
 
   if (!session) {
-    redirect('/api/auth/signin');
+    redirect("/api/auth/signin");
   }
 
   if (!secret) {
@@ -19,13 +20,16 @@ export default async function HomePage() {
   }
 
   let data: any[] = [];
+
   if (session && session.user.id) {
     data = await getCredentialsByUserId(session.user.id, secret)();
     data = data.sort((a, b) => a.name.localeCompare(b.name));
   }
 
   return (
-    <Suspense fallback={<LoadingSpinner message="Loading your secure credentials..." />}>
+    <Suspense
+      fallback={<LoadingSpinner message="Loading your secure credentials..." />}
+    >
       <CredentialsLoader initialCredentials={data} />
     </Suspense>
   );

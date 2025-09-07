@@ -1,6 +1,5 @@
 import { encrypt, decrypt } from "@/lib/util/cipher.util";
 import { cache, revalidateTag } from "@/lib/util/cache.util";
-
 import * as credentialsQueries from "@/lib/db/queries/credentials.queries";
 
 async function internal_getCredentialsByUserId(
@@ -56,10 +55,12 @@ export async function createCredential(
 
   try {
     const result = await credentialsQueries.createCredential(newCredential);
+
     revalidateTag(`credentials-${credential.userId}`);
+
     return { id: result[0].id };
-  } catch (error) {
-    console.error(error);
+  } catch {
+    // TODO: Implement proper error logging for credential creation
     return null;
   }
 }
@@ -73,9 +74,15 @@ export async function getCredentialById(id: string, cipherSecret: string) {
   return getCredentialDto(credential[0], cipherSecret);
 }
 
-export async function getCredentialById_cached(id: string, userId: string, cipherSecret: string) {
+export async function getCredentialById_cached(
+  id: string,
+  userId: string,
+  cipherSecret: string,
+) {
   const credentials = await getCredentialsByUserId(userId, cipherSecret)();
+
   if (credentials.length === 0) return undefined;
+
   return credentials.find((c) => c.id === parseInt(id));
 }
 
@@ -117,10 +124,12 @@ export async function updateCredential(
       parseInt(id),
       credential,
     );
+
     revalidateTag(`credentials-${credential.userId}`);
+
     return { id: result[0].id };
-  } catch (error) {
-    console.error(error);
+  } catch {
+    // TODO: Implement proper error logging for credential update
     return null;
   }
 }
@@ -128,10 +137,12 @@ export async function updateCredential(
 export async function deleteCredential(id: string) {
   try {
     const result = await credentialsQueries.deleteCredential(parseInt(id));
+
     revalidateTag(`credentials-${result[0].userId}`);
+
     return result;
-  } catch (error) {
-    console.error(error);
+  } catch {
+    // TODO: Implement proper error logging for credential deletion
     return null;
   }
 }
@@ -150,10 +161,10 @@ async function getCredentialDto(
     }),
     credential.note && credential.note_iv && credential.note_authTag
       ? decrypt(cipherSecret, {
-        encryptedText: credential.note,
-        iv: credential.note_iv,
-        authTag: credential.note_authTag,
-      })
+          encryptedText: credential.note,
+          iv: credential.note_iv,
+          authTag: credential.note_authTag,
+        })
       : undefined,
   ]).then(([password, note]) => ({
     ...credential,

@@ -2,19 +2,18 @@ import { Link } from "@heroui/link";
 import { Chip } from "@heroui/chip";
 import { Divider } from "@heroui/divider";
 import { button as buttonStyles } from "@heroui/theme";
+import {
+  TbShield,
+  TbKey,
+  TbUsers,
+  TbLock,
+  TbEye,
+  TbDevices,
+  TbPlus,
+} from "react-icons/tb";
 
-import { siteConfig } from "@/config/site";
 import { title, subtitle } from "@/components/primitives";
 import { getSession } from "@/lib/auth";
-import { 
-  TbShield, 
-  TbKey, 
-  TbUsers, 
-  TbLock, 
-  TbEye, 
-  TbDevices,
-  TbPlus 
-} from "react-icons/tb";
 
 export default async function AboutPage() {
   const session = await getSession();
@@ -23,33 +22,35 @@ export default async function AboutPage() {
     {
       icon: TbShield,
       title: "End-to-End Encryption",
-      description: "AES-GCM encryption ensures your sensitive data stays secure"
+      description:
+        "AES-GCM encryption ensures your sensitive data stays secure",
     },
     {
       icon: TbKey,
       title: "Secure Authentication",
-      description: "Google OAuth integration with NextAuth.js for trusted access"
+      description:
+        "Google OAuth integration with NextAuth.js for trusted access",
     },
     {
       icon: TbUsers,
       title: "Team Management",
-      description: "Safely share credentials with authorized team members"
+      description: "Safely share credentials with authorized team members",
     },
     {
       icon: TbLock,
       title: "Zero Knowledge",
-      description: "Your encryption keys never leave your control"
+      description: "Your encryption keys never leave your control",
     },
     {
       icon: TbEye,
       title: "Audit Trail",
-      description: "Track who accessed what and when for complete transparency"
+      description: "Track who accessed what and when for complete transparency",
     },
     {
       icon: TbDevices,
       title: "Cross-Platform",
-      description: "Access your credentials securely from any device"
-    }
+      description: "Access your credentials securely from any device",
+    },
   ];
 
   return (
@@ -65,15 +66,24 @@ export default async function AboutPage() {
           <span className={title()}>Credentials Manager</span>
         </div>
         <div className={subtitle({ class: "mt-4 max-w-2xl mx-auto" })}>
-          Keep your valuable information hidden with enterprise-grade encryption.
-          Safely store and manage sensitive credentials for your team.
+          Keep your valuable information hidden with enterprise-grade
+          encryption. Safely store and manage sensitive credentials for your
+          team.
         </div>
-        
+
         <div className="flex flex-wrap justify-center gap-2 mt-6">
-          <Chip color="primary" variant="flat">🔐 AES-GCM Encryption</Chip>
-          <Chip color="secondary" variant="flat">🚀 Next.js 15</Chip>
-          <Chip color="success" variant="flat">🛡️ Zero Knowledge</Chip>
-          <Chip color="warning" variant="flat">👥 Team Collaboration</Chip>
+          <Chip color="primary" variant="flat">
+            🔐 AES-GCM Encryption
+          </Chip>
+          <Chip color="secondary" variant="flat">
+            🚀 Next.js 15
+          </Chip>
+          <Chip color="success" variant="flat">
+            🛡️ Zero Knowledge
+          </Chip>
+          <Chip color="warning" variant="flat">
+            👥 Team Collaboration
+          </Chip>
         </div>
       </div>
 
@@ -84,7 +94,7 @@ export default async function AboutPage() {
             color: "primary",
             radius: "full",
             variant: "shadow",
-            size: "lg"
+            size: "lg",
           })}
           href="/"
         >
@@ -92,10 +102,10 @@ export default async function AboutPage() {
           View Credentials
         </Link>
         <Link
-          className={buttonStyles({ 
-            variant: "bordered", 
+          className={buttonStyles({
+            variant: "bordered",
             radius: "full",
-            size: "lg"
+            size: "lg",
           })}
           href="/credentials/new"
         >
@@ -109,11 +119,18 @@ export default async function AboutPage() {
       {/* Features Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl w-full px-4">
         {features.map((feature, index) => (
-          <div key={index} className="bg-content1 rounded-large p-6 shadow-medium hover:shadow-large transition-shadow">
+          <div
+            key={index}
+            className="bg-content1 rounded-large p-6 shadow-medium hover:shadow-large transition-shadow"
+          >
             <div className="text-center">
               <feature.icon className="text-4xl text-primary mx-auto mb-4" />
-              <h3 className="text-xl font-semibold mb-3 text-foreground">{feature.title}</h3>
-              <p className="text-default-600 leading-relaxed">{feature.description}</p>
+              <h3 className="text-xl font-semibold mb-3 text-foreground">
+                {feature.title}
+              </h3>
+              <p className="text-default-600 leading-relaxed">
+                {feature.description}
+              </p>
             </div>
           </div>
         ))}
@@ -130,8 +147,9 @@ export default async function AboutPage() {
                 Private Repository
               </h3>
               <p className="text-warning-700 dark:text-warning-300 mb-6 leading-relaxed">
-                This project is restricted to authorized team members only. 
-                Please sign in with your authorized Google account to access the credentials manager.
+                This project is restricted to authorized team members only.
+                Please sign in with your authorized Google account to access the
+                credentials manager.
               </p>
               <Link
                 className={buttonStyles({
@@ -160,7 +178,8 @@ export default async function AboutPage() {
                 Welcome back, {session.user?.name}!
               </h3>
               <p className="text-success-700 dark:text-success-300 mb-6">
-                You are authenticated and ready to manage your secure credentials.
+                You are authenticated and ready to manage your secure
+                credentials.
               </p>
               <div className="flex gap-3 justify-center">
                 <Link

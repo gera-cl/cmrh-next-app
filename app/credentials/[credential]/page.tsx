@@ -1,4 +1,5 @@
 import { redirect } from "next/navigation";
+
 import CredentialForm from "../credentials-form";
 
 import {
@@ -18,23 +19,27 @@ export default async function CredentialDetails({
 }) {
   const session = await getSession();
 
-  if (!session)
-    redirect('/api/auth/signin');
-  if (!secret)
-    throw Error("Missing encryption secret");
+  if (!session) redirect("/api/auth/signin");
+  if (!secret) throw Error("Missing encryption secret");
 
   const credentialId = (await params).credential;
-  const credential = await getCredentialById_cached(credentialId, session.user.id!, secret);
+  const credential = await getCredentialById_cached(
+    credentialId,
+    session.user.id!,
+    secret,
+  );
 
   const handleSubmit = async (credential: Partial<CredentialDto>) => {
     "use server";
     const result = await updateCredential(credentialId, credential, secret);
+
     return result;
   };
 
   const handleDelete = async (id: string) => {
     "use server";
     const result = await deleteCredential(id);
+
     return result && result.length > 0 ? true : false;
   };
 
@@ -43,8 +48,8 @@ export default async function CredentialDetails({
       <CredentialForm
         className="min-w-[90vw] md:min-w-[70vw] lg:min-w-[40vw]"
         credential={credential}
-        handleSubmit={handleSubmit}
         handleDelete={handleDelete}
+        handleSubmit={handleSubmit}
       />
     </div>
   );

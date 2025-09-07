@@ -82,7 +82,3 @@ export async function decrypt(
 
   return decryptedText;
 }
-
-function generateRandomBase64() {
-  return randomBytes(32).toString("base64");
-}

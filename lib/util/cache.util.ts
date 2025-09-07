@@ -1,6 +1,6 @@
 import {
   unstable_cache,
-  revalidateTag as unstable_revalidateTag
+  revalidateTag as unstable_revalidateTag,
 } from "next/cache";
 import { parse, stringify } from "superjson";
 
@@ -12,6 +12,7 @@ export const cache = <T, P extends unknown[]>(
 ) => {
   const wrap = async (params: unknown[]): Promise<string> => {
     const result = await fn(...(params as P));
+
     return stringify(result);
   };
 
@@ -19,9 +20,10 @@ export const cache = <T, P extends unknown[]>(
 
   return async (...params: P): Promise<T> => {
     const result = await cachedFn(params);
+
     return parse(result);
   };
-}
+};
 
 // ! the revalidation closes the delete confirmation modal
 export function revalidateTag(tag: string): void {

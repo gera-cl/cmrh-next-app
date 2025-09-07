@@ -29,37 +29,39 @@ const DEFAULT_CONFIG: PasswordGeneratorConfig = {
  */
 export function generatePassword(
   options: PasswordOptions,
-  config: PasswordGeneratorConfig = DEFAULT_CONFIG
+  config: PasswordGeneratorConfig = DEFAULT_CONFIG,
 ): string {
   let charset = "";
-  
+
   if (options.includeUppercase) {
     charset += config.uppercase;
   }
-  
+
   if (options.includeLowercase) {
     charset += config.lowercase;
   }
-  
+
   if (options.includeNumbers) {
     charset += config.numbers;
   }
-  
+
   if (options.includeSymbols) {
     charset += options.customSymbols || config.defaultSymbols;
   }
-  
+
   // Return empty string if no character types are selected
   if (charset === "") {
     return "";
   }
-  
+
   let password = "";
+
   for (let i = 0; i < options.length; i++) {
     const randomIndex = Math.floor(Math.random() * charset.length);
+
     password += charset.charAt(randomIndex);
   }
-  
+
   return password;
 }
 
@@ -75,24 +77,34 @@ export function validatePasswordOptions(options: PasswordOptions): {
   if (options.length < 1) {
     return { isValid: false, error: "Password length must be at least 1" };
   }
-  
+
   if (options.length > 1000) {
-    return { isValid: false, error: "Password length cannot exceed 1000 characters" };
+    return {
+      isValid: false,
+      error: "Password length cannot exceed 1000 characters",
+    };
   }
-  
-  const hasAnyCharacterType = options.includeUppercase || 
-                             options.includeLowercase || 
-                             options.includeNumbers || 
-                             options.includeSymbols;
-  
+
+  const hasAnyCharacterType =
+    options.includeUppercase ||
+    options.includeLowercase ||
+    options.includeNumbers ||
+    options.includeSymbols;
+
   if (!hasAnyCharacterType) {
-    return { isValid: false, error: "At least one character type must be selected" };
+    return {
+      isValid: false,
+      error: "At least one character type must be selected",
+    };
   }
-  
+
   if (options.includeSymbols && !options.customSymbols) {
-    return { isValid: false, error: "Custom symbols cannot be empty when symbols are enabled" };
+    return {
+      isValid: false,
+      error: "Custom symbols cannot be empty when symbols are enabled",
+    };
   }
-  
+
   return { isValid: true };
 }
 
@@ -122,16 +134,22 @@ export function estimatePasswordStrength(options: PasswordOptions): {
   strength: "very-weak" | "weak" | "fair" | "good" | "strong" | "very-strong";
 } {
   let charsetSize = 0;
-  
+
   if (options.includeUppercase) charsetSize += 26;
   if (options.includeLowercase) charsetSize += 26;
   if (options.includeNumbers) charsetSize += 10;
-  if (options.includeSymbols) charsetSize += (options.customSymbols?.length || 0);
-  
+  if (options.includeSymbols) charsetSize += options.customSymbols?.length || 0;
+
   const entropy = Math.log2(Math.pow(charsetSize, options.length));
-  
-  let strength: "very-weak" | "weak" | "fair" | "good" | "strong" | "very-strong";
-  
+
+  let strength:
+    | "very-weak"
+    | "weak"
+    | "fair"
+    | "good"
+    | "strong"
+    | "very-strong";
+
   if (entropy < 30) {
     strength = "very-weak";
   } else if (entropy < 50) {
@@ -145,6 +163,6 @@ export function estimatePasswordStrength(options: PasswordOptions): {
   } else {
     strength = "very-strong";
   }
-  
+
   return { charsetSize, entropy, strength };
 }

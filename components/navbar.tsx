@@ -36,19 +36,19 @@ import { siteConfig } from "@/config/site";
 
 const userMenu = (
   session: Session | null,
-  status: "authenticated" | "loading" | "unauthenticated",
+  _status: "authenticated" | "loading" | "unauthenticated",
 ) => (
   <Dropdown placement="bottom-end">
     <DropdownTrigger>
       <Avatar
         isBordered
+        alt="Profile"
         as="button"
         className="transition-transform"
         name={session?.user.name}
         radius="lg"
         size="sm"
         src={session?.user.image}
-        alt="Profile"
       />
     </DropdownTrigger>
     <DropdownMenu aria-label="Profile Actions" variant="flat">

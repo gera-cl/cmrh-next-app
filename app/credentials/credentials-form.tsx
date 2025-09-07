@@ -9,11 +9,6 @@ import { Divider } from "@heroui/divider";
 import { Link } from "@heroui/link";
 import { Alert } from "@heroui/alert";
 import { useDisclosure } from "@heroui/modal";
-
-import ConfirmationDialog from "@/components/confirmation-dialog";
-import { CopyButton } from "@/components/copy-button";
-import { CredentialDto } from "@/lib/services/credentials.service";
-
 import {
   TbArrowBack,
   TbBrowserShare,
@@ -22,8 +17,14 @@ import {
   TbEyeOff,
 } from "react-icons/tb";
 
+import ConfirmationDialog from "@/components/confirmation-dialog";
+import { CopyButton } from "@/components/copy-button";
+import { CredentialDto } from "@/lib/services/credentials.service";
+
 export default function CredentialForm(props: {
-  handleSubmit: (credential: Partial<CredentialDto>) => Promise<{ id: number } | null>;
+  handleSubmit: (
+    credential: Partial<CredentialDto>,
+  ) => Promise<{ id: number } | null>;
   handleDelete?: (id: string) => Promise<boolean>;
   handleDeleteSuccess?: () => Promise<void>;
   credential?: Partial<CredentialDto>;
@@ -34,13 +35,18 @@ export default function CredentialForm(props: {
     Partial<CredentialDto> | undefined
   >(props.credential);
   const [isSubmitLoading, setIsSubmitLoading] = React.useState(false);
-  const [status, setStatus] = React.useState<"successful" | "failed" | null>(null);
+  const [status, setStatus] = React.useState<"successful" | "failed" | null>(
+    null,
+  );
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const [createdCredential, setCreatedCredential] = useState<string | null>(null);
+  const [createdCredential, setCreatedCredential] = useState<string | null>(
+    null,
+  );
   const [isPasswordVisible, setIsPasswordVisible] = React.useState(false);
   const router = useRouter();
 
-  const togglePasswordVisibility = () => setIsPasswordVisible(!isPasswordVisible);
+  const togglePasswordVisibility = () =>
+    setIsPasswordVisible(!isPasswordVisible);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     setIsSubmitLoading(true);
@@ -48,13 +54,14 @@ export default function CredentialForm(props: {
 
     if (credential) {
       const result = await props.handleSubmit(credential);
+
       setStatus(result ? "successful" : "failed");
 
       if (isEditing) {
       } else {
         if (result) {
           setCreatedCredential(result ? result.id.toString() : null);
-          setCredential(undefined)
+          setCredential(undefined);
         }
       }
     }
@@ -63,8 +70,8 @@ export default function CredentialForm(props: {
   };
 
   const handleDelete = () => {
-    return props.handleDelete!((props.credential?.id!).toString())
-  }
+    return props.handleDelete!(props.credential?.id!.toString());
+  };
 
   return (
     <>
@@ -75,12 +82,14 @@ export default function CredentialForm(props: {
         onSubmit={handleSubmit}
       >
         <div className="w-full flex justify-between items-center">
-          <span className="text-xl">{isEditing ? "Edit" : "Add"} credential</span>
+          <span className="text-xl">
+            {isEditing ? "Edit" : "Add"} credential
+          </span>
           <Button
             as={Link}
             color="secondary"
-            variant="flat"
             endContent={<TbArrowBack className="text-lg" />}
+            variant="flat"
             onPress={() => router.back()}
           >
             Go back
@@ -88,6 +97,19 @@ export default function CredentialForm(props: {
         </div>
         <Input
           isRequired
+          endContent={
+            isEditing && (
+              <Button
+                isExternal
+                isIconOnly
+                as={Link}
+                href={credential?.url}
+                variant="light"
+              >
+                <TbBrowserShare className="w-5 h-5" />
+              </Button>
+            )
+          }
           errorMessage="Please enter a valid url"
           label="URL"
           labelPlacement="outside"
@@ -95,18 +117,8 @@ export default function CredentialForm(props: {
           placeholder="Enter the url"
           type="url"
           value={credential?.url || ""}
-          onChange={(e) => setCredential({ ...credential, url: e.target.value })}
-          endContent={
-            isEditing &&
-            <Button
-              as={Link}
-              isExternal
-              href={credential?.url}
-              variant="light"
-              isIconOnly
-            >
-              <TbBrowserShare className="w-5 h-5" />
-            </Button>
+          onChange={(e) =>
+            setCredential({ ...credential, url: e.target.value })
           }
         />
 
@@ -119,11 +131,22 @@ export default function CredentialForm(props: {
           placeholder="Enter the credential name"
           type="text"
           value={credential?.name || ""}
-          onChange={(e) => setCredential({ ...credential, name: e.target.value })}
+          onChange={(e) =>
+            setCredential({ ...credential, name: e.target.value })
+          }
         />
 
         <Input
           isRequired
+          endContent={
+            isEditing && (
+              <CopyButton
+                icon={TbCopy}
+                textToCopy={credential?.username || ""}
+                variant="light"
+              />
+            )
+          }
           errorMessage="Please enter a valid username"
           label="Username"
           labelPlacement="outside"
@@ -134,14 +157,32 @@ export default function CredentialForm(props: {
           onChange={(e) =>
             setCredential({ ...credential, username: e.target.value })
           }
-          endContent={
-            isEditing &&
-            <CopyButton variant="light" textToCopy={credential?.username || ""} icon={TbCopy} />
-          }
         />
 
         <Input
           isRequired
+          endContent={
+            <>
+              {isEditing && (
+                <CopyButton
+                  icon={TbCopy}
+                  textToCopy={credential?.password || ""}
+                  variant="light"
+                />
+              )}
+              <Button
+                isIconOnly
+                variant="light"
+                onPress={togglePasswordVisibility}
+              >
+                {isPasswordVisible ? (
+                  <TbEyeOff className="w-5 h-5" />
+                ) : (
+                  <TbEye className="w-5 h-5" />
+                )}
+              </Button>
+            </>
+          }
           errorMessage="Please enter a valid password"
           label="Password"
           labelPlacement="outside"
@@ -152,26 +193,20 @@ export default function CredentialForm(props: {
           onChange={(e) =>
             setCredential({ ...credential, password: e.target.value })
           }
-          endContent={
-            <>
-              {
-                isEditing &&
-                <CopyButton variant="light" textToCopy={credential?.password || ""} icon={TbCopy} />
-              }
-              <Button
-                variant="light"
-                onPress={togglePasswordVisibility}
-                isIconOnly
-              >
-                {isPasswordVisible ? <TbEyeOff className="w-5 h-5" /> : <TbEye className="w-5 h-5" />}
-              </Button>
-            </>
-          }
         />
 
         <Divider className="my-4" />
 
         <Input
+          endContent={
+            isEditing && (
+              <CopyButton
+                icon={TbCopy}
+                textToCopy={credential?.alternative_username || ""}
+                variant="light"
+              />
+            )
+          }
           errorMessage="Please enter a valid alternative username"
           label="Alternative username"
           labelPlacement="outside"
@@ -186,9 +221,6 @@ export default function CredentialForm(props: {
                 e.target.value.trim().length > 0 ? e.target.value : undefined,
             })
           }
-          endContent={isEditing &&
-            <CopyButton variant="light" textToCopy={credential?.alternative_username || ""} icon={TbCopy} />
-          }
         />
 
         <Textarea
@@ -200,7 +232,8 @@ export default function CredentialForm(props: {
           onChange={(e) =>
             setCredential({
               ...credential,
-              note: e.target.value.trim().length > 0 ? e.target.value : undefined,
+              note:
+                e.target.value.trim().length > 0 ? e.target.value : undefined,
             })
           }
         />
@@ -208,14 +241,25 @@ export default function CredentialForm(props: {
           <div className="w-full flex items-center my-3">
             <Alert
               color={status === "successful" ? "success" : "danger"}
-              title={`Credential ${isEditing ? "updated" : "created"} ${status === "successful" ? "successfully" : "with errors"}`}
-              endContent={status === "successful" && !isEditing &&
-                <Button as={Link} href={`/credentials/${createdCredential}`} color="success" size="sm" variant="flat">
-                  View Credential
-                </Button>
-                || status === "failed" &&
-                <Button size="sm" variant="flat" type="submit" color="danger">Retry</Button>
+              endContent={
+                (status === "successful" && !isEditing && (
+                  <Button
+                    as={Link}
+                    color="success"
+                    href={`/credentials/${createdCredential}`}
+                    size="sm"
+                    variant="flat"
+                  >
+                    View Credential
+                  </Button>
+                )) ||
+                (status === "failed" && (
+                  <Button color="danger" size="sm" type="submit" variant="flat">
+                    Retry
+                  </Button>
+                ))
               }
+              title={`Credential ${isEditing ? "updated" : "created"} ${status === "successful" ? "successfully" : "with errors"}`}
             />
           </div>
         )}
@@ -224,18 +268,15 @@ export default function CredentialForm(props: {
             <Button
               className="sm:mr-auto"
               color="danger"
+              isDisabled={isSubmitLoading}
               type="button"
               variant="flat"
               onPress={() => onOpen()}
-              isDisabled={isSubmitLoading}
             >
               Delete
             </Button>
           )}
-          <Button
-            type="reset"
-            variant="flat"
-          >
+          <Button type="reset" variant="flat">
             Reset
           </Button>
           <Button
@@ -261,15 +302,11 @@ export default function CredentialForm(props: {
       </Form>
       {isEditing && (
         <ConfirmationDialog
-          dialogBody={
-            <p>
-              Are you sure you want to delete this credential?
-            </p>
-          }
+          dialogBody={<p>Are you sure you want to delete this credential?</p>}
           isOpen={isOpen}
           onClose={onClose}
-          onOpen={onOpen}
           onConfirm={handleDelete}
+          onOpen={onOpen}
         />
       )}
     </>

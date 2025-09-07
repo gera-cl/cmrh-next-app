@@ -1,7 +1,13 @@
-"use client"
+"use client";
 
 import { Button } from "@heroui/button";
-import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter } from "@heroui/modal";
+import {
+  Modal,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+} from "@heroui/modal";
 import { redirect } from "next/navigation";
 import React, { useEffect } from "react";
 
@@ -12,24 +18,26 @@ export default function ConfirmationDialog(props: {
   isOpen: boolean;
   onConfirm: () => Promise<boolean>;
 }) {
-
   type DialogStatus = "idle" | "loading" | "success" | "error";
   const [status, setStatus] = React.useState<DialogStatus>("idle");
 
   const handleConfirm = async () => {
     setStatus("loading");
     const result = await props.onConfirm();
+
     setStatus(result ? "success" : "error");
   };
 
   useEffect(() => {
     if (status !== "loading" && status !== "idle") {
-      sleep(400).then(() => {
-        if (status === "success") redirect('/');
-      }).finally(() => {
-        props.onClose();
-        setStatus("idle");
-      })
+      sleep(400)
+        .then(() => {
+          if (status === "success") redirect("/");
+        })
+        .finally(() => {
+          props.onClose();
+          setStatus("idle");
+        });
     }
   }, [status]);
 
@@ -38,20 +46,30 @@ export default function ConfirmationDialog(props: {
       <ModalContent>
         {(onClose) => (
           <>
-            <ModalHeader className="flex flex-col gap-1">Action Confirmation</ModalHeader>
-            <ModalBody>
-              {props.dialogBody}
-            </ModalBody>
+            <ModalHeader className="flex flex-col gap-1">
+              Action Confirmation
+            </ModalHeader>
+            <ModalBody>{props.dialogBody}</ModalBody>
             <ModalFooter>
               <Button color="danger" variant="light" onPress={onClose}>
                 Cancel
               </Button>
               <Button
-                color={status === "success" ? "success" : status === "error" ? "danger" : "primary"}
-                isLoading={status === 'loading'}
+                color={
+                  status === "success"
+                    ? "success"
+                    : status === "error"
+                      ? "danger"
+                      : "primary"
+                }
+                isLoading={status === "loading"}
                 onPress={handleConfirm}
               >
-                {status === "success" ? "Done" : status === "error" ? "Failed" : "Confirm"}
+                {status === "success"
+                  ? "Done"
+                  : status === "error"
+                    ? "Failed"
+                    : "Confirm"}
               </Button>
             </ModalFooter>
           </>

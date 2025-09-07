@@ -6,7 +6,14 @@ import { TbCheck } from "react-icons/tb";
 type CopyButtonProps = {
   textToCopy: string;
   icon: FC<ComponentProps<"svg">>;
-  variant?: "solid" | "light" | "bordered" | "flat" | "faded" | "shadow" | "ghost";
+  variant?:
+    | "solid"
+    | "light"
+    | "bordered"
+    | "flat"
+    | "faded"
+    | "shadow"
+    | "ghost";
   iconClassName?: string;
   addTooltip?: boolean;
   tooltipText?: string;
@@ -36,12 +43,11 @@ export const CopyButton = (props: CopyButtonProps) => {
         <props.icon className={`h-5 w-5 ${props.iconClassName || ""}`} />
       )}
     </Button>
-  )
-  return (
-    props.addTooltip || false ?
-      <Tooltip content={props.tooltipText}>
-        {button}
-      </Tooltip>
-      : button
+  );
+
+  return props.addTooltip || false ? (
+    <Tooltip content={props.tooltipText}>{button}</Tooltip>
+  ) : (
+    button
   );
 };

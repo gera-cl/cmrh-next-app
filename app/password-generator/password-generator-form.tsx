@@ -7,25 +7,32 @@ import { Input } from "@heroui/input";
 import { Divider } from "@heroui/divider";
 import { Slider } from "@heroui/slider";
 import { TbRefresh, TbCopy } from "react-icons/tb";
+
 import { CopyButton } from "@/components/copy-button";
-import { 
-  generatePassword, 
-  validatePasswordOptions, 
+import {
+  generatePassword,
+  validatePasswordOptions,
   createDefaultPasswordOptions,
-  type PasswordOptions 
+  type PasswordOptions,
 } from "@/lib/util/password.util";
 
 export default function PasswordGeneratorForm() {
   const [password, setPassword] = useState("");
-  const [options, setOptions] = useState<PasswordOptions>(createDefaultPasswordOptions());
+  const [options, setOptions] = useState<PasswordOptions>(
+    createDefaultPasswordOptions(),
+  );
 
   const handleGenerate = () => {
     const newPassword = generatePassword(options);
+
     setPassword(newPassword);
   };
 
-  const updateOption = (key: keyof PasswordOptions, value: boolean | number | string) => {
-    setOptions(prev => ({ ...prev, [key]: value }));
+  const updateOption = (
+    key: keyof PasswordOptions,
+    value: boolean | number | string,
+  ) => {
+    setOptions((prev) => ({ ...prev, [key]: value }));
   };
 
   const validation = validatePasswordOptions(options);
@@ -44,30 +51,30 @@ export default function PasswordGeneratorForm() {
         <div className="md:hidden space-y-3">
           <div className="flex gap-2">
             <Input
-              value={password}
               readOnly
-              variant="bordered"
               className="font-mono text-sm"
               classNames={{
                 input: "text-center text-sm font-bold tracking-wider",
-                inputWrapper: "bg-gray-50 dark:bg-gray-800 border-2 h-12"
+                inputWrapper: "bg-gray-50 dark:bg-gray-800 border-2 h-12",
               }}
+              value={password}
+              variant="bordered"
             />
-            <CopyButton 
-              textToCopy={password} 
-              icon={TbCopy}
-              variant="flat"
+            <CopyButton
               addTooltip={true}
+              icon={TbCopy}
+              textToCopy={password}
               tooltipText="Copy password"
+              variant="flat"
             />
           </div>
           <Button
+            className="w-full"
             color="primary"
-            onPress={handleGenerate}
-            startContent={<TbRefresh className="text-lg" />}
             isDisabled={isGenerateDisabled}
             size="lg"
-            className="w-full"
+            startContent={<TbRefresh className="text-lg" />}
+            onPress={handleGenerate}
           >
             Generate
           </Button>
@@ -76,30 +83,30 @@ export default function PasswordGeneratorForm() {
         {/* Desktop Layout */}
         <div className="hidden md:flex items-center justify-between">
           <Input
-            value={password}
             readOnly
-            variant="bordered"
             className="font-mono text-lg"
             classNames={{
               input: "text-center text-lg font-bold tracking-wider",
-              inputWrapper: "bg-gray-50 dark:bg-gray-800 border-2 h-14"
+              inputWrapper: "bg-gray-50 dark:bg-gray-800 border-2 h-14",
             }}
+            value={password}
+            variant="bordered"
           />
           <div className="flex gap-2 ml-4">
-            <CopyButton 
-              textToCopy={password} 
-              icon={TbCopy}
-              variant="flat"
+            <CopyButton
               addTooltip={true}
+              icon={TbCopy}
+              textToCopy={password}
               tooltipText="Copy password"
+              variant="flat"
             />
             <Button
+              className="min-w-unit-20"
               color="primary"
-              onPress={handleGenerate}
-              startContent={<TbRefresh className="text-lg" />}
               isDisabled={isGenerateDisabled}
               size="lg"
-              className="min-w-unit-20"
+              startContent={<TbRefresh className="text-lg" />}
+              onPress={handleGenerate}
             >
               Generate
             </Button>
@@ -114,11 +121,14 @@ export default function PasswordGeneratorForm() {
         <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100">
           Customize your password
         </h2>
-        
+
         {/* Password Length */}
         <div className="space-y-4">
           <div className="flex items-center justify-between">
-            <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
+            <label
+              className="text-sm font-medium text-gray-700 dark:text-gray-300"
+              htmlFor="password-length-slider"
+            >
               Password length
             </label>
             <div className="bg-gray-100 dark:bg-gray-800 px-3 py-1 rounded-md min-w-[60px] text-center">
@@ -128,20 +138,22 @@ export default function PasswordGeneratorForm() {
             </div>
           </div>
           <Slider
-            size="lg"
-            step={1}
-            minValue={4}
-            maxValue={128}
-            value={options.length}
-            onChange={(value: number | number[]) => {
-              const newLength = Array.isArray(value) ? value[0] : value;
-              updateOption("length", newLength);
-            }}
             className="w-full"
             classNames={{
               track: "bg-gray-200 dark:bg-gray-700",
               filler: "bg-primary",
-              thumb: "bg-primary border-4 border-white shadow-lg"
+              thumb: "bg-primary border-4 border-white shadow-lg",
+            }}
+            id="password-length-slider"
+            maxValue={128}
+            minValue={4}
+            size="lg"
+            step={1}
+            value={options.length}
+            onChange={(value: number | number[]) => {
+              const newLength = Array.isArray(value) ? value[0] : value;
+
+              updateOption("length", newLength);
             }}
           />
         </div>
@@ -151,11 +163,11 @@ export default function PasswordGeneratorForm() {
         <div className="md:hidden flex flex-col space-y-6">
           <div className="w-full">
             <Switch
-              isSelected={options.includeUppercase}
-              onValueChange={(value) => updateOption("includeUppercase", value)}
-              color="secondary"
-              size="md"
               className="w-full"
+              color="secondary"
+              isSelected={options.includeUppercase}
+              size="md"
+              onValueChange={(value) => updateOption("includeUppercase", value)}
             >
               <span className="font-medium">Uppercase</span>
             </Switch>
@@ -163,11 +175,11 @@ export default function PasswordGeneratorForm() {
 
           <div className="w-full">
             <Switch
-              isSelected={options.includeLowercase}
-              onValueChange={(value) => updateOption("includeLowercase", value)}
-              color="secondary"
-              size="md"
               className="w-full"
+              color="secondary"
+              isSelected={options.includeLowercase}
+              size="md"
+              onValueChange={(value) => updateOption("includeLowercase", value)}
             >
               <span className="font-medium">Lowercase</span>
             </Switch>
@@ -175,11 +187,11 @@ export default function PasswordGeneratorForm() {
 
           <div className="w-full">
             <Switch
-              isSelected={options.includeNumbers}
-              onValueChange={(value) => updateOption("includeNumbers", value)}
-              color="secondary"
-              size="md"
               className="w-full"
+              color="secondary"
+              isSelected={options.includeNumbers}
+              size="md"
+              onValueChange={(value) => updateOption("includeNumbers", value)}
             >
               <span className="font-medium">Numbers</span>
             </Switch>
@@ -187,29 +199,35 @@ export default function PasswordGeneratorForm() {
 
           <div className="w-full space-y-3">
             <Switch
-              isSelected={options.includeSymbols}
-              onValueChange={(value) => updateOption("includeSymbols", value)}
-              color="secondary"
-              size="md"
               className="w-full"
+              color="secondary"
+              isSelected={options.includeSymbols}
+              size="md"
+              onValueChange={(value) => updateOption("includeSymbols", value)}
             >
               <span className="font-medium">Symbols</span>
             </Switch>
             {options.includeSymbols && (
               <div className="space-y-2">
-                <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                <label
+                  className="text-sm font-medium text-gray-700 dark:text-gray-300"
+                  htmlFor="custom-symbols-mobile"
+                >
                   Custom symbols
                 </label>
                 <Input
-                  value={options.customSymbols}
-                  onChange={(e) => updateOption("customSymbols", e.target.value)}
-                  placeholder="Enter custom symbols"
-                  variant="bordered"
                   className="font-mono"
                   classNames={{
-                    inputWrapper: "bg-gray-50 dark:bg-gray-800 border h-10"
+                    inputWrapper: "bg-gray-50 dark:bg-gray-800 border h-10",
                   }}
+                  id="custom-symbols-mobile"
+                  placeholder="Enter custom symbols"
                   size="sm"
+                  value={options.customSymbols}
+                  variant="bordered"
+                  onChange={(e) =>
+                    updateOption("customSymbols", e.target.value)
+                  }
                 />
               </div>
             )}
@@ -219,37 +237,37 @@ export default function PasswordGeneratorForm() {
         {/* Desktop Layout - Switches in grid */}
         <div className="hidden md:grid md:grid-cols-2 gap-6">
           <Switch
-            isSelected={options.includeUppercase}
-            onValueChange={(value) => updateOption("includeUppercase", value)}
             color="secondary"
+            isSelected={options.includeUppercase}
             size="lg"
+            onValueChange={(value) => updateOption("includeUppercase", value)}
           >
             <span className="font-medium">Uppercase</span>
           </Switch>
 
           <Switch
-            isSelected={options.includeLowercase}
-            onValueChange={(value) => updateOption("includeLowercase", value)}
             color="secondary"
+            isSelected={options.includeLowercase}
             size="lg"
+            onValueChange={(value) => updateOption("includeLowercase", value)}
           >
             <span className="font-medium">Lowercase</span>
           </Switch>
 
           <Switch
-            isSelected={options.includeNumbers}
-            onValueChange={(value) => updateOption("includeNumbers", value)}
             color="secondary"
+            isSelected={options.includeNumbers}
             size="lg"
+            onValueChange={(value) => updateOption("includeNumbers", value)}
           >
             <span className="font-medium">Numbers</span>
           </Switch>
 
           <Switch
-            isSelected={options.includeSymbols}
-            onValueChange={(value) => updateOption("includeSymbols", value)}
             color="secondary"
+            isSelected={options.includeSymbols}
             size="lg"
+            onValueChange={(value) => updateOption("includeSymbols", value)}
           >
             <span className="font-medium">Symbols</span>
           </Switch>
@@ -258,18 +276,22 @@ export default function PasswordGeneratorForm() {
         {/* Custom Symbols Input (Desktop) - Outside grid to avoid alignment issues */}
         {options.includeSymbols && (
           <div className="hidden md:block space-y-2">
-            <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
+            <label
+              className="text-sm font-medium text-gray-700 dark:text-gray-300"
+              htmlFor="custom-symbols-desktop"
+            >
               Custom symbols
             </label>
             <Input
-              value={options.customSymbols}
-              onChange={(e) => updateOption("customSymbols", e.target.value)}
-              placeholder="Enter custom symbols"
-              variant="bordered"
               className="font-mono"
               classNames={{
-                inputWrapper: "bg-gray-50 dark:bg-gray-800 border h-10"
+                inputWrapper: "bg-gray-50 dark:bg-gray-800 border h-10",
               }}
+              id="custom-symbols-desktop"
+              placeholder="Enter custom symbols"
+              value={options.customSymbols}
+              variant="bordered"
+              onChange={(e) => updateOption("customSymbols", e.target.value)}
             />
           </div>
         )}

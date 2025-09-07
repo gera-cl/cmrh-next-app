@@ -1,4 +1,5 @@
-import { redirect } from 'next/navigation'
+import { redirect } from "next/navigation";
+
 import CredentialForm from "../credentials-form";
 
 import {
@@ -13,22 +14,21 @@ const secret = process.env.CMRH_ENCRYPTION_SECRET;
 export default async function NewCredentialPage() {
   const session = await getSession();
 
-  if (!session)
-    redirect('/api/auth/signin');
-  if (!secret)
-    throw Error("Missing encryption secret");
+  if (!session) redirect("/api/auth/signin");
+  if (!secret) throw Error("Missing encryption secret");
 
   const handleSubmit = async (credential: Partial<CredentialDto>) => {
     "use server";
     if (session && session.user.id) {
-      credential.userId = parseInt(session.user.id)
+      credential.userId = parseInt(session.user.id);
     } else {
-      return null
+      return null;
     }
     const result = await createCredential(
       credential as CreateCredentialDto,
       secret,
     );
+
     return result;
   };
 

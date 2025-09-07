@@ -1,12 +1,13 @@
-import { redirect } from 'next/navigation'
+import { redirect } from "next/navigation";
+
 import PasswordGeneratorForm from "./password-generator-form";
+
 import { getSession } from "@/lib/auth";
 
 export default async function PasswordGeneratorPage() {
   const session = await getSession();
 
-  if (!session)
-    redirect('/api/auth/signin');
+  if (!session) redirect("/api/auth/signin");
 
   return (
     <div className="flex max-w-full justify-center min-h-screen bg-background py-4">

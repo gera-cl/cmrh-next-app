@@ -4,14 +4,12 @@ import React, { SVGProps } from "react";
 import { useRouter } from "next/navigation";
 import { Avatar } from "@heroui/avatar";
 import { Button, ButtonGroup } from "@heroui/button";
-import { ChipProps } from "@heroui/chip";
 import {
   Dropdown,
   DropdownTrigger,
   DropdownMenu,
   DropdownItem,
 } from "@heroui/dropdown";
-import { Pagination } from "@heroui/pagination";
 import {
   Table,
   TableHeader,
@@ -34,12 +32,12 @@ import {
   TbPlus,
   TbChevronDown,
 } from "react-icons/tb";
+import clsx from "clsx";
 
 import { CredentialDto } from "@/lib/services/credentials.service";
 import { CopyButton } from "@/components/copy-button";
 import { AvatarFallback } from "@/components/avatar-fallback";
 import { siteConfig } from "@/config/site";
-import clsx from "clsx";
 
 export type IconSvgProps = SVGProps<SVGSVGElement> & {
   size?: number;
@@ -57,25 +55,15 @@ export const columns = [
   { name: "ACTIONS", uid: "actions" },
 ];
 
-const statusColorMap: Record<string, ChipProps["color"]> = {
-  active: "success",
-  paused: "danger",
-  vacation: "warning",
-};
-
 const INITIAL_VISIBLE_COLUMNS = ["name", "username", "actions"];
 
 export default function CredentialsTable(props: {
   credentials: CredentialDto[];
 }) {
   const [filterValue, setFilterValue] = React.useState("");
-  const [selectedKeys, setSelectedKeys] = React.useState<Selection>(
-    new Set([]),
-  );
   const [visibleColumns, setVisibleColumns] = React.useState<Selection>(
     new Set(INITIAL_VISIBLE_COLUMNS),
   );
-  const [statusFilter, setStatusFilter] = React.useState<Selection>("all");
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
   const [sortDescriptor, setSortDescriptor] = React.useState<SortDescriptor>({
     column: "age",
@@ -111,9 +99,7 @@ export default function CredentialsTable(props: {
     // }
 
     return filteredUsers;
-  }, [props.credentials, filterValue, statusFilter]);
-
-  const pages = Math.ceil(filteredItems.length / rowsPerPage);
+  }, [props.credentials, filterValue]);
 
   const items = React.useMemo(() => {
     // const start = (page - 1) * rowsPerPage;
@@ -142,15 +128,15 @@ export default function CredentialsTable(props: {
             <div className="inline-flex items-center">
               <div className="block mr-2 min-w-9">
                 <Avatar
-                  alt="Credential image"
-                  size="md"
-                  radius="full"
-                  src={`/api/icons?domain=${credential.url}&size=64`}
-                  name={credential.name}
                   showFallback
+                  alt="Credential image"
                   fallback={
                     <AvatarFallback letter={credential.name[0]} size={36} />
                   }
+                  name={credential.name}
+                  radius="full"
+                  size="md"
+                  src={`/api/icons?domain=${credential.url}&size=64`}
                 />
               </div>
               <div className="flex-1 max-w-[35vw] sm:max-w-[15vw]">
@@ -167,11 +153,11 @@ export default function CredentialsTable(props: {
           return (
             <Snippet
               hideSymbol
-              radius="none"
               classNames={{
                 base: "pl-0 py-0 bg-transparent",
                 copyButton: "opacity-40",
               }}
+              radius="none"
             >
               {cellValue?.toString()}
             </Snippet>
@@ -188,20 +174,20 @@ export default function CredentialsTable(props: {
               variant="ghost"
             >
               <CopyButton
+                addTooltip
                 icon={TbUsers}
                 iconClassName="text-cyan-300"
                 textToCopy={credential.username}
-                variant="ghost"
-                addTooltip
                 tooltipText="Copy username"
+                variant="ghost"
               />
               <CopyButton
+                addTooltip
                 icon={TbKey}
                 iconClassName="text-amber-300"
                 textToCopy={credential.password}
-                variant="ghost"
-                addTooltip
                 tooltipText="Copy password"
+                variant="ghost"
               />
               <Tooltip content="Go to the website">
                 <Button
@@ -223,18 +209,6 @@ export default function CredentialsTable(props: {
     },
     [],
   );
-
-  const onNextPage = React.useCallback(() => {
-    if (page < pages) {
-      setPage(page + 1);
-    }
-  }, [page, pages]);
-
-  const onPreviousPage = React.useCallback(() => {
-    if (page > 1) {
-      setPage(page - 1);
-    }
-  }, [page]);
 
   const onRowsPerPageChange = React.useCallback(
     (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -326,7 +300,6 @@ export default function CredentialsTable(props: {
     );
   }, [
     filterValue,
-    statusFilter,
     visibleColumns,
     onSearchChange,
     onRowsPerPageChange,
@@ -334,65 +307,25 @@ export default function CredentialsTable(props: {
     hasSearchFilter,
   ]);
 
-  const bottomContent = React.useMemo(() => {
-    return (
-      <div className="py-2 px-2 flex justify-between items-center">
-        <span className="w-[30%] text-small text-default-400">
-          {selectedKeys === "all"
-            ? "All items selected"
-            : `${selectedKeys.size} of ${filteredItems.length} selected`}
-        </span>
-        <Pagination
-          isCompact
-          showControls
-          showShadow
-          color="primary"
-          page={page}
-          total={pages}
-          onChange={setPage}
-        />
-        <div className="hidden sm:flex w-[30%] justify-end gap-2">
-          <Button
-            isDisabled={pages === 1}
-            size="sm"
-            variant="flat"
-            onPress={onPreviousPage}
-          >
-            Previous
-          </Button>
-          <Button
-            isDisabled={pages === 1}
-            size="sm"
-            variant="flat"
-            onPress={onNextPage}
-          >
-            Next
-          </Button>
-        </div>
-      </div>
-    );
-  }, [selectedKeys, items.length, page, pages, hasSearchFilter]);
-
   return (
     <Table
       isHeaderSticky
       removeWrapper
+      aria-label="Example table with custom cells, pagination and sorting"
+      bottomContentPlacement="outside"
       classNames={{
         wrapper: "max-h-[382px]",
         td: "max-w-[50vw] sm:max-w-[20vw]",
         tr: "hover:bg-default-50 cursor-pointer",
       }}
-      // selectedKeys={selectedKeys}
-      // selectionMode="single"
       sortDescriptor={sortDescriptor}
       topContent={topContent}
-      onSortChange={setSortDescriptor}
-      aria-label="Example table with custom cells, pagination and sorting"
-      // bottomContent={bottomContent}
-      bottomContentPlacement="outside"
       topContentPlacement="outside"
+      onSortChange={setSortDescriptor}
+      // bottomContent={bottomContent}
+      // selectedKeys={selectedKeys}
+      // selectionMode="single"
       // onSelectionChange={setSelectedKeys}
-      onSelectionChange={(e: any) => console.log(`onSelect ${e.currentKey}`)}
     >
       <TableHeader columns={headerColumns}>
         {(column) => (
@@ -417,7 +350,7 @@ export default function CredentialsTable(props: {
               <TableCell
                 className={clsx(
                   columnKey === "username" && "hidden sm:table-cell",
-                  columnKey === "actions" && "px-1 sm:px-3"
+                  columnKey === "actions" && "px-1 sm:px-3",
                 )}
               >
                 {renderCell(item, columnKey)}
