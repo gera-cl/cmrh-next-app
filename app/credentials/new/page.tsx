@@ -1,4 +1,5 @@
 import { redirect } from "next/navigation";
+import { Session } from "next-auth";
 
 import CredentialForm from "../credentials-form";
 
@@ -12,7 +13,7 @@ import { getSession } from "@/lib/auth";
 const secret = process.env.CMRH_ENCRYPTION_SECRET;
 
 export default async function NewCredentialPage() {
-  const session = await getSession();
+  const session = (await getSession()) as Session | null;
 
   if (!session) redirect("/api/auth/signin");
   if (!secret) throw Error("Missing encryption secret");

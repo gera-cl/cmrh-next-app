@@ -69,8 +69,12 @@ export default function CredentialForm(props: {
     setIsSubmitLoading(false);
   };
 
-  const handleDelete = () => {
-    return props.handleDelete!(props.credential?.id!.toString());
+  const handleDelete = async () => {
+    if (props.credential?.id && props.handleDelete) {
+      return await props.handleDelete(props.credential.id.toString());
+    }
+
+    return false;
   };
 
   return (

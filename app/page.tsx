@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 import { Suspense } from "react";
+import { Session } from "next-auth";
 
 import CredentialsLoader from "@/components/credentials-loader";
 import LoadingSpinner from "@/components/loading-spinner";
@@ -9,7 +10,7 @@ import { getSession } from "@/lib/auth";
 const secret = process.env.CMRH_ENCRYPTION_SECRET;
 
 export default async function HomePage() {
-  const session = await getSession();
+  const session = (await getSession()) as Session | null;
 
   if (!session) {
     redirect("/api/auth/signin");

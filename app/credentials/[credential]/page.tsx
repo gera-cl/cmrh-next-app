@@ -1,4 +1,5 @@
 import { redirect } from "next/navigation";
+import { Session } from "next-auth";
 
 import CredentialForm from "../credentials-form";
 
@@ -17,7 +18,7 @@ export default async function CredentialDetails({
 }: {
   params: Promise<{ credential: string }>;
 }) {
-  const session = await getSession();
+  const session = (await getSession()) as Session | null;
 
   if (!session) redirect("/api/auth/signin");
   if (!secret) throw Error("Missing encryption secret");

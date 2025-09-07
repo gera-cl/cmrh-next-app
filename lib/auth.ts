@@ -3,10 +3,10 @@ import type {
   NextApiRequest,
   NextApiResponse,
 } from "next";
-import type { NextAuthOptions } from "next-auth";
+import type { AuthOptions } from "next-auth/core/types";
 
 import GoogleProvider from "next-auth/providers/google";
-import { getServerSession } from "next-auth";
+import { getServerSession } from "next-auth/next";
 
 import { createUser, getUserByEmail } from "@/lib/db/queries/users.queries";
 
@@ -24,7 +24,7 @@ export const authConfig = {
     }),
   ],
   callbacks: {
-    async signIn({ account, profile }) {
+    async signIn({ account, profile }: any) {
       if (account?.provider === "google") {
         const email = profile?.email;
         let user = await getUserByEmail(email!);
@@ -47,7 +47,7 @@ export const authConfig = {
 
       return false;
     },
-    async jwt({ token, account }) {
+    async jwt({ token, account }: any) {
       if (account) {
         token.userId = account.userId;
         token.sub = account.providerAccountId;
@@ -55,7 +55,7 @@ export const authConfig = {
 
       return token;
     },
-    async session({ session, token }) {
+    async session({ session, token }: any) {
       if (token) {
         session.user.providerAccountId = token.sub;
         session.user.id = token.userId;
@@ -64,7 +64,7 @@ export const authConfig = {
       return session;
     },
   },
-} satisfies NextAuthOptions;
+} satisfies AuthOptions;
 
 // Use it in server contexts
 export function getSession(

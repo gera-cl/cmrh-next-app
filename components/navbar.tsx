@@ -26,7 +26,6 @@ import {
 import { Avatar } from "@heroui/avatar";
 import clsx from "clsx";
 import { TbCirclePlus, TbSearch } from "react-icons/tb";
-import { Session } from "next-auth";
 import { User } from "@heroui/user";
 import { useReducer } from "react";
 
@@ -35,7 +34,7 @@ import { ThemeSwitch } from "@/components/theme-switch";
 import { siteConfig } from "@/config/site";
 
 const userMenu = (
-  session: Session | null,
+  session: any,
   _status: "authenticated" | "loading" | "unauthenticated",
 ) => (
   <Dropdown placement="bottom-end">

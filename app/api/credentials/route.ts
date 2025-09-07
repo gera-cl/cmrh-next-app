@@ -1,4 +1,5 @@
 import { NextRequest } from "next/server";
+import { Session } from "next-auth";
 
 import { getSession } from "@/lib/auth";
 import {
@@ -9,7 +10,7 @@ import {
 const secret = process.env.CMRH_ENCRYPTION_SECRET;
 
 export async function POST(request: NextRequest) {
-  const session = await getSession();
+  const session = (await getSession()) as Session | null;
 
   if (!session)
     return Response.json({ error: "Unauthorized" }, { status: 401 });
@@ -43,7 +44,7 @@ export async function POST(request: NextRequest) {
 }
 
 export async function GET() {
-  const session = await getSession();
+  const session = (await getSession()) as Session | null;
 
   if (!session || !session.user.id)
     return Response.json({ error: "Unauthorized" }, { status: 401 });
